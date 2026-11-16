@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="az">
 <head>
@@ -21,24 +20,25 @@ button{width:100%;padding:14px;margin-top:12px;background:#c6a568;color:#111;bor
 <div class="panel">
 <h1>NATIG ARCHIVE</h1>
 <p>ADMINISTRATION ACCESS</p>
-<input id="email" type="email" placeholder="E-mail address">
-<input id="password" type="password" placeholder="Password">
+<input id="email" type="email" placeholder="E-mail address" autocomplete="username">
+<input id="password" type="password" placeholder="Password" autocomplete="current-password">
 <button onclick="login()">SIGN IN</button>
 <div id="message"></div>
 </div>
 <script>
 const SUPABASE_URL = "https://kmgfziafzuibfhfotyip.supabase.co";
-const SUPABASE_KEY = "PUBLISHABLE_KEY_BURAYA";
+const SUPABASE_KEY = "sb_publishable_G1seS69IYPVaw-rq3Danuw__mU7C_aw";
 const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 async function login(){
- const email=document.getElementById("email").value;
+ const email=document.getElementById("email").value.trim();
  const password=document.getElementById("password").value;
  const message=document.getElementById("message");
+ if(!email || !password){message.textContent="Please enter your email and password.";return;}
  message.textContent="Signing in...";
- const {data,error}=await db.auth.signInWithPassword({email,password});
+ const {error}=await db.auth.signInWithPassword({email,password});
  if(error){message.textContent="Login failed: "+error.message;return;}
- message.textContent="Login successful.";
+ message.textContent="Login successful. Admin authentication is connected.";
 }
 </script>
 </body>
