@@ -1,0 +1,45 @@
+
+<!DOCTYPE html>
+<html lang="az">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NATIG ARCHIVE — Admin</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#090909;color:#eee;font-family:Arial,sans-serif;display:grid;place-items:center;min-height:100vh;padding:20px}
+.panel{width:100%;max-width:420px;border:1px solid #333;padding:38px;background:#111}
+h1{font-size:23px;letter-spacing:4px;color:#d2b16d}
+p{color:#999;font-size:13px;line-height:1.6}
+input{width:100%;padding:14px;margin:9px 0;background:#080808;border:1px solid #444;color:white}
+button{width:100%;padding:14px;margin-top:12px;background:#c6a568;color:#111;border:0;cursor:pointer;font-weight:bold}
+#message{font-size:13px;margin-top:15px}
+</style>
+</head>
+<body>
+<div class="panel">
+<h1>NATIG ARCHIVE</h1>
+<p>ADMINISTRATION ACCESS</p>
+<input id="email" type="email" placeholder="E-mail address">
+<input id="password" type="password" placeholder="Password">
+<button onclick="login()">SIGN IN</button>
+<div id="message"></div>
+</div>
+<script>
+const SUPABASE_URL = "https://kmgfziafzuibfhfotyip.supabase.co";
+const SUPABASE_KEY = "PUBLISHABLE_KEY_BURAYA";
+const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+async function login(){
+ const email=document.getElementById("email").value;
+ const password=document.getElementById("password").value;
+ const message=document.getElementById("message");
+ message.textContent="Signing in...";
+ const {data,error}=await db.auth.signInWithPassword({email,password});
+ if(error){message.textContent="Login failed: "+error.message;return;}
+ message.textContent="Login successful.";
+}
+</script>
+</body>
+</html>
