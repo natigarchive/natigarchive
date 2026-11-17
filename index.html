@@ -18,6 +18,22 @@
 @media(max-width:700px){.owl-watermark{width:58%;right:-8%;top:38%;opacity:.27}.owl-watermark span{font-size:6px;letter-spacing:2px}.hero-inner>h1{font-size:clamp(58px,15vw,88px)}.hero-inner>.intro{max-width:360px}}
 /* Minimal homepage: sections open from the menu */
 .menu{display:block;cursor:pointer;font-size:10px;letter-spacing:2px;text-transform:uppercase;padding:10px 15px}.menu:after{content:"";display:inline-block;width:13px;height:1px;background:var(--gold);margin:0 0 3px 9px;box-shadow:0 5px 0 var(--gold)}.links{display:none;position:absolute;top:76px;right:max(24px,calc((100vw - var(--max))/2));width:min(290px,calc(100vw - 40px));padding:18px 22px;background:#10100f;border:1px solid #393329;box-shadow:0 18px 50px #000b;flex-direction:column;align-items:stretch;gap:0}.links.open{display:flex}.links a{padding:13px 2px;border-bottom:1px solid var(--line);font-size:11px}.links a:last-child{border-bottom:0}.ecosystem,.section{display:none}.hero{display:flex;min-height:calc(100vh - 76px)}body[data-view="ecosystem"] .ecosystem,body[data-view="about"] #about,body[data-view="cinema"] #cinema,body[data-view="journal"] #journal,body[data-view="works"] #works,body[data-view="market"] #market,body[data-view="mystery"] #mystery,body[data-view="community"] #community,body[data-view="contact"] #contact{display:block}.hero[hidden]{display:none!important}@media(max-width:850px){.links{top:68px;left:auto;right:17px;width:min(290px,calc(100vw - 34px));}.nav{height:68px}.hero{min-height:calc(100vh - 68px)}}
+
+/* Animated Watcher emblem */
+.owl-watermark{transform:translateY(-48%);animation:owl-arrive 1.8s ease-out both}
+.owl-watermark svg{overflow:visible;transform-origin:50% 55%;animation:owl-breathe 7s ease-in-out 1.8s infinite}
+.owl-watermark svg>g{stroke-dasharray:1200;stroke-dashoffset:1200;animation:owl-draw 3.4s cubic-bezier(.5,0,.2,1) .25s forwards}
+.owl-watermark svg circle[cx="163"],.owl-watermark svg circle[cx="257"]{filter:drop-shadow(0 0 5px #e8c78d);animation:owl-eyes 4.8s ease-in-out 3.7s infinite}
+.owl-watermark>span{opacity:0;animation:owl-caption 1.2s ease 2.6s forwards}
+.owl-mark{filter:drop-shadow(0 0 0 transparent);transition:filter .35s ease,transform .5s ease}
+.brand:hover .owl-mark{filter:drop-shadow(0 0 8px #d9b77c99);transform:translateY(-2px) scale(1.06)}
+@keyframes owl-arrive{from{opacity:0;transform:translate(18px,-45%) scale(.96)}to{opacity:.78;transform:translate(0,-48%) scale(1)}}
+@keyframes owl-draw{to{stroke-dashoffset:0}}
+@keyframes owl-breathe{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-7px) scale(1.012)}}
+@keyframes owl-eyes{0%,76%,100%{opacity:.72}82%{opacity:1;filter:drop-shadow(0 0 13px #f0ce91) brightness(1.55)}88%{opacity:.82}}
+@keyframes owl-caption{to{opacity:1}}
+@media(prefers-reduced-motion:reduce){.owl-watermark,.owl-watermark svg,.owl-watermark svg>g,.owl-watermark>span,.owl-watermark svg circle,.owl-mark{animation:none!important;transition:none!important;stroke-dashoffset:0!important;opacity:1}}
+
 </style><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script></head>
 <body>
 <header class="top"><div class="wrap nav"><a class="brand" href="#home"><svg class="owl-mark" viewBox="0 0 64 64" aria-hidden="true"><path d="M10 12 23 20 32 14 41 20 54 12 51 39Q48 53 32 58 16 53 13 39Z" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M13 18 24 29 32 23 40 29 51 18M24 29Q18 39 27 43L32 38 37 43Q46 39 40 29" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="24" cy="34" r="4.2" fill="none" stroke="currentColor" stroke-width="1.7"/><circle cx="40" cy="34" r="4.2" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="m29 44 3 4 3-4M20 51 16 58M44 51 48 58" fill="none" stroke="currentColor" stroke-width="1.5"/></svg><span>NATIG ARCHIVE</span></a><nav class="links" id="navLinks"><a href="#ecosystem">Bölmələr</a><a href="#about" data-i="navAbout">Haqqında</a><a href="#cinema" data-i="navCinema">Kino & Araşdırma</a><a href="#journal" data-i="navJournal">Jurnal</a><a href="#works" data-i="navWorks">Ssenarilər</a><a href="#market">Market</a><a href="#mystery">Detektiv dosyelər</a><a href="#community">İcma</a><a href="#contact" data-i="navContact">Əlaqə</a></nav><div class="lang"><button class="active" data-lang="az">AZ</button><button data-lang="tr">TR</button><button data-lang="en">EN</button><button data-lang="ru">RU</button></div><button class="menu" id="menuBtn" aria-label="Menu">☰</button></div></header>
