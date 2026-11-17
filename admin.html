@@ -16,6 +16,19 @@ button{background:var(--gold);color:#111;border:0;padding:12px 16px;font-weight:
 .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.row>*{flex:1}.item{border-top:1px solid var(--line);padding:14px 0;display:flex;gap:14px;align-items:center}.thumb{width:68px;height:68px;object-fit:cover;background:#222;border-radius:4px}.item-main{flex:1;min-width:150px}.item-title{font-weight:700;margin-bottom:5px}.item-actions{display:flex;gap:7px}.item-actions button{padding:8px 10px;font-size:12px}
 #app{display:none}.login{max-width:430px;margin:10vh auto}.notice{padding:12px;background:#1b1b1b;border-left:3px solid var(--gold);color:#ccc;margin:12px 0;white-space:pre-wrap}.hidden{display:none!important}.check{display:flex;gap:8px;align-items:center}.check input{width:auto}
 @media(max-width:700px){.grid{grid-template-columns:1fr}.top{align-items:flex-start;flex-direction:column}.item{align-items:flex-start}.item-actions{flex-direction:column}.wrap{padding:18px 12px}}
+
+#chatInbox{display:grid;grid-template-columns:minmax(220px,.8fr) minmax(280px,1.5fr);gap:14px;min-height:480px}
+#chatThreads,#chatThread{background:#0b0b0b;border:1px solid var(--line);padding:12px;min-width:0}
+.chat-thread{padding:13px;border-bottom:1px solid #292929;cursor:pointer}
+.chat-thread:hover,.chat-thread.selected{background:#201c16;border-left:2px solid var(--gold)}
+.chat-thread strong{display:block;font-size:13px}.chat-thread small{color:#999;font-size:11px}
+#chatMessages{height:370px;overflow:auto;display:flex;flex-direction:column;gap:9px;padding:8px}
+.admin-chat-msg{max-width:85%;padding:10px 12px;background:#1c1c1c;border:1px solid #333;font-size:13px;white-space:pre-wrap;overflow-wrap:anywhere}
+.admin-chat-msg.admin{align-self:flex-end;background:#2a241b;border-color:#655237}
+.admin-chat-msg small{display:block;color:#999;font-size:10px;margin-top:5px}
+#chatReplyForm{display:flex;gap:8px;margin-top:10px}#chatReply{min-height:44px;max-height:110px;flex:1}
+#chatReplyForm button{align-self:stretch}
+@media(max-width:720px){#chatInbox{grid-template-columns:1fr}#chatThreads{max-height:220px;overflow:auto}#chatMessages{height:300px}}
 </style></head>
 <body>
 <div id="loginView" class="login card">
@@ -26,7 +39,7 @@ button{background:var(--gold);color:#111;border:0;padding:12px 16px;font-weight:
 </div>
 <div id="app" class="wrap">
 <header class="top"><div><div class="brand">NATIG ARCHIVE</div><div class="muted">MƏRKƏZİ İDARƏETMƏ PANELİ</div></div><div class="row" style="flex:0 1 auto"><span id="userEmail" class="muted"></span><button id="logoutBtn" class="secondary">Çıxış</button></div></header>
-<div class="tabs"><button class="active" data-tab="content">Arxiv məzmunu</button><button data-tab="products">Market məhsulları</button><button data-tab="media">Şəkillər</button></div>
+<div class="tabs"><button class="active" data-tab="content">Arxiv məzmunu</button><button data-tab="products">Market məhsulları</button><button data-tab="media">Şəkillər</button><button data-tab="chat">Canlı çat <span id="chatUnread" style="color:#c8a96a"></span></button></div>
 <div id="status" class="notice hidden"></div>
 <section id="contentTab">
 <div class="card"><h2 id="contentFormTitle">Yeni məzmun əlavə et</h2><form id="contentForm">
@@ -49,6 +62,8 @@ button{background:var(--gold);color:#111;border:0;padding:12px 16px;font-weight:
 <div class="card"><div class="row"><h2 style="margin:0">Məhsullar</h2><button class="secondary" id="refreshProducts" style="flex:0 0 auto">Yenilə</button></div><div id="productList" class="muted" style="margin-top:12px">Yüklənir...</div></div>
 </section>
 <section id="mediaTab" class="hidden"><div class="card"><h2>Şəkil kitabxanası</h2><p class="muted">Buradan yüklədiyin şəkillər məqalə və məhsullarda istifadə edilə bilər. JPG, PNG, WEBP və GIF — maksimum 10 MB.</p><input id="standaloneImage" type="file" accept="image/jpeg,image/png,image/webp,image/gif"><button id="uploadStandalone">Şəkli yüklə</button><div id="mediaMsg" class="notice hidden"></div><div id="mediaList" class="row" style="margin-top:18px;flex-wrap:wrap"></div></div></section>
+<section id="chatTab" class="hidden"><div class="card"><div class="row"><div><h2 style="margin:0">Canlı dəstək mesajları</h2><p class="muted">Sayt ziyarətçilərinin mesajları burada görünür.</p></div><button class="secondary" id="refreshChats" style="flex:0 0 auto">Yenilə</button></div>
+<div id="chatInbox"><div id="chatThreads"><div class="muted">Söhbətlər yüklənir...</div></div><div id="chatThread"><div class="muted" id="chatEmpty">Söhbət seçərək mesajları oxu və cavab yaz.</div><div id="chatMessages"></div><form id="chatReplyForm" class="hidden"><textarea id="chatReply" maxlength="2000" placeholder="Cavabını yaz..." required></textarea><button type="submit">Göndər</button></form><div class="row" style="margin-top:10px"><button class="secondary hidden" id="chatCloseConversation" type="button">Söhbəti bağla</button></div></div></div></div></section>
 </div>
 <script>
 const SUPABASE_URL="https://kmgfziafzuibfhfotyip.supabase.co";
@@ -88,5 +103,56 @@ async function loadProducts(){const box=$("productList");box.textContent="Yükl�
 $("refreshProducts").onclick=loadProducts;
 $("uploadStandalone").onclick=async()=>{const f=$("standaloneImage").files[0],msg=$("mediaMsg");msg.classList.remove("hidden");if(!f){msg.textContent="Əvvəlcə şəkil seç.";return;}try{msg.textContent="Yüklənir...";const url=await uploadImage(f);msg.textContent="Yükləndi: "+url;await loadMedia();}catch(e){msg.textContent="Xəta: "+e.message;}};
 async function loadMedia(){const box=$("mediaList");if(!box)return;box.innerHTML="";const {data,error}=await db.storage.from("archive-images").list("",{limit:100,sortBy:{column:"created_at",order:"desc"}});if(error){box.textContent=error.message;return;}if(!data.length){box.textContent="Hələ şəkil yoxdur.";return;}data.forEach(file=>{if(!file.name)return;const url=db.storage.from("archive-images").getPublicUrl(file.name).data.publicUrl;const wrap=document.createElement("div");wrap.style.cssText="width:140px;background:#191919;padding:8px;border:1px solid #333";const img=document.createElement("img");img.src=url;img.style.cssText="width:100%;height:95px;object-fit:cover";const name=document.createElement("div");name.className="muted";name.style.cssText="overflow-wrap:anywhere;margin:6px 0";name.textContent=file.name.slice(0,34);const copy=document.createElement("button");copy.className="secondary";copy.textContent="URL-ni köçür";copy.style.width="100%";copy.onclick=()=>navigator.clipboard.writeText(url).then(()=>showStatus("Şəkil linki köçürüldü."));wrap.append(img,name,copy);box.append(wrap);});}
+
+/* Secure live-chat inbox */
+let selectedChat=null,chatChannel=null,chatRefreshTimer=null;
+async function loadChats(){
+ const box=$("chatThreads");box.textContent="Yüklənir...";
+ const {data,error}=await db.from("chat_conversations").select("id,visitor_name,status,created_at,updated_at").order("updated_at",{ascending:false}).limit(100);
+ if(error){box.textContent="Xəta: "+error.message;return;}
+ box.replaceChildren();
+ if(!data?.length){box.textContent="Hələ mesaj yoxdur.";return;}
+ let openCount=0;
+ data.forEach(c=>{
+  if(c.status==="open")openCount++;
+  const el=document.createElement("div");el.className="chat-thread"+(selectedChat===c.id?" selected":"");
+  const name=document.createElement("strong");name.textContent=c.visitor_name;
+  const meta=document.createElement("small");meta.textContent=(c.status==="open"?"Açıq":"Bağlı")+" · "+new Date(c.updated_at).toLocaleString();
+  el.append(name,meta);el.onclick=()=>selectChat(c.id,c.visitor_name,c.status);box.append(el);
+ });
+ $("chatUnread").textContent=openCount?"("+openCount+")":"";
+}
+async function selectChat(id,name,status){
+ selectedChat=id;$("chatEmpty").textContent=name+" · "+(status==="open"?"Açıq söhbət":"Bağlı söhbət");
+ $("chatEmpty").classList.remove("hidden");$("chatReplyForm").classList.toggle("hidden",status!=="open");$("chatCloseConversation").classList.toggle("hidden",status!=="open");
+ const {data,error}=await db.from("chat_messages").select("id,sender,message,created_at").eq("conversation_id",id).order("created_at",{ascending:true});
+ const box=$("chatMessages");box.replaceChildren();
+ if(error){box.textContent=error.message;return;}
+ (data||[]).forEach(m=>{const el=document.createElement("div");el.className="admin-chat-msg "+(m.sender==="admin"?"admin":"visitor");el.append(document.createTextNode(m.message));const time=document.createElement("small");time.textContent=new Date(m.created_at).toLocaleString();el.append(time);box.append(el);});
+ box.scrollTop=box.scrollHeight;loadChats();
+}
+$("chatReplyForm").onsubmit=async e=>{
+ e.preventDefault();if(!selectedChat)return;
+ const input=$("chatReply"),message=input.value.trim();if(!message)return;
+ const button=e.submitter||$("chatReplyForm").querySelector("button");button.disabled=true;
+ try{
+  const {error}=await db.from("chat_messages").insert({conversation_id:selectedChat,sender:"admin",message});
+  if(error)throw error;
+  const {error:updateError}=await db.from("chat_conversations").update({updated_at:new Date().toISOString()}).eq("id",selectedChat);
+  if(updateError)throw updateError;
+  input.value="";await selectChat(selectedChat,$("chatEmpty").textContent.split(" · ")[0],"open");
+ }catch(err){showStatus("Mesaj göndərilmədi: "+err.message,true);}finally{button.disabled=false;}
+};
+$("chatCloseConversation").onclick=async()=>{
+ if(!selectedChat)return;
+ const {error}=await db.from("chat_conversations").update({status:"closed",updated_at:new Date().toISOString()}).eq("id",selectedChat);
+ if(error){showStatus(error.message,true);return;}
+ selectedChat=null;$("chatMessages").replaceChildren();$("chatReplyForm").classList.add("hidden");$("chatCloseConversation").classList.add("hidden");$("chatEmpty").textContent="Söhbət bağlandı.";await loadChats();
+};
+$("refreshChats").onclick=loadChats;
+const originalShowView=showView;
+showView=function(user){originalShowView(user);if(!chatChannel){chatChannel=db.channel("na-admin-live-chat").on("postgres_changes",{event:"*",schema:"public",table:"chat_messages"},()=>{loadChats();if(selectedChat)selectChat(selectedChat,$("chatEmpty").textContent.split(" · ")[0],"open");}).on("postgres_changes",{event:"*",schema:"public",table:"chat_conversations"},loadChats).subscribe();}if(chatRefreshTimer)clearInterval(chatRefreshTimer);chatRefreshTimer=setInterval(loadChats,10000);};
+document.querySelectorAll("[data-tab]").forEach(btn=>btn.addEventListener("click",()=>{if(btn.dataset.tab==="chat")loadChats();}));
+
 checkSession();
 </script></body></html>
