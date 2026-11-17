@@ -39,8 +39,9 @@ button{background:var(--gold);color:#111;border:0;padding:12px 16px;font-weight:
 </div>
 <div id="app" class="wrap">
 <header class="top"><div><div class="brand">NATIG ARCHIVE</div><div class="muted">MƏRKƏZİ İDARƏETMƏ PANELİ</div></div><div class="row" style="flex:0 1 auto"><span id="userEmail" class="muted"></span><button id="logoutBtn" class="secondary">Çıxış</button></div></header>
-<div class="tabs"><button class="active" data-tab="content">Arxiv məzmunu</button><button data-tab="memories">Xatirə Divarı</button><button data-tab="products">Market məhsulları</button><button data-tab="orders">Sifarişlər</button><button data-tab="media">Şəkillər</button><button data-tab="chat">Canlı çat <span id="chatUnread" style="color:#c8a96a"></span></button></div>
+<div class="tabs"><button class="active" data-tab="content">Arxiv məzmunu</button><button data-tab="journal">Jurnal müraciətləri</button><button data-tab="memories">Xatirə Divarı</button><button data-tab="products">Market məhsulları</button><button data-tab="orders">Sifarişlər</button><button data-tab="media">Şəkillər</button><button data-tab="chat">Canlı çat <span id="chatUnread" style="color:#c8a96a"></span></button></div>
 <div id="status" class="notice hidden"></div>
+<section id="journalTab" class="hidden"><div class="card"><div class="row"><div><h2 style="margin:0">Jurnal üçün göndərilən yazılar</h2><p class="muted">Yazını yoxla. Təsdiq etdikdə avtomatik NATIG ARCHIVE jurnalında dərc ediləcək.</p></div><button class="secondary" id="refreshJournal" style="flex:0 0 auto">Yenilə</button></div><div id="journalAdminList" class="muted" style="margin-top:14px">Yüklənir...</div></div></section>
 <section id="contentTab">
 <div class="card"><h2 id="contentFormTitle">Yeni məzmun əlavə et</h2><form id="contentForm">
 <input type="hidden" id="contentId">
@@ -92,7 +93,7 @@ $("loginBtn").onclick=async()=>{const email=$("email").value.trim(),password=$("
 $("password").addEventListener("keydown",e=>{if(e.key==="Enter")$("loginBtn").click();});
 $("logoutBtn").onclick=async()=>{await db.auth.signOut();location.reload();};
 db.auth.onAuthStateChange((_event,session)=>{if(session&&session.user.id===ADMIN_ID&&!currentUser)showView(session.user);});
-document.querySelectorAll("[data-tab]").forEach(btn=>btn.onclick=()=>{document.querySelectorAll("[data-tab]").forEach(b=>b.classList.toggle("active",b===btn));["content","products","orders","media","chat","memories"].forEach(t=>$(t+"Tab").classList.toggle("hidden",t!==btn.dataset.tab));if(btn.dataset.tab==="memories")loadMemories();clearStatus();});
+document.querySelectorAll("[data-tab]").forEach(btn=>btn.onclick=()=>{document.querySelectorAll("[data-tab]").forEach(b=>b.classList.toggle("active",b===btn));["content","journal","products","orders","media","chat","memories"].forEach(t=>$(t+"Tab").classList.toggle("hidden",t!==btn.dataset.tab));if(btn.dataset.tab==="memories")loadMemories();if(btn.dataset.tab==="journal")loadJournalSubmissions();clearStatus();});
 function resetContent(){$("contentForm").reset();$("contentId").value="";$("contentFormTitle").textContent="Yeni məzmun əlavə et";$("contentSave").textContent="Yadda saxla";}
 $("contentReset").onclick=resetContent;
 $("contentForm").onsubmit=async e=>{e.preventDefault();try{$("contentSave").disabled=true;let imageUrl=null;const file=$("contentImage").files[0];if(file)imageUrl=await uploadImage(file);const id=$("contentId").value;const row={title:$("contentTitle").value.trim(),category:$("contentCategory").value,language:$("contentLanguage").value,description:$("contentDescription").value,content:$("contentBody").value,published:$("contentPublished").checked};if(imageUrl)row.image_url=imageUrl;const result=id?await db.from("archive_content").update(row).eq("id",id):await db.from("archive_content").insert(row);if(result.error)throw result.error;resetContent();showStatus("Məzmun uğurla yadda saxlanıldı.");await loadContent();}catch(err){showStatus("Xəta: "+err.message,true);}finally{$("contentSave").disabled=false;}};
@@ -165,6 +166,50 @@ $("refreshOrders").onclick=loadOrders;
 
 /* Secure live-chat inbox */
 let selectedChat=null,chatChannel=null,chatRefreshTimer=null;
+
+async function loadJournalSubmissions(){
+ const box=$("journalAdminList");box.textContent="Jurnal müraciətləri yüklənir...";
+ const {data,error}=await db.from("journal_submissions").select("*").order("created_at",{ascending:false}).limit(200);
+ if(error){box.textContent="Xəta: "+error.message;return;}
+ box.replaceChildren();if(!data?.length){box.textContent="Hələ jurnal müraciəti yoxdur.";return;}
+ const labels={story:"Hekayə",photography:"Fotoqrafiya",art:"Sənət",thoughts:"Düşüncə",essay:"Esse"};
+ data.forEach(item=>{
+  const card=document.createElement("div");card.className="item";card.style.alignItems="flex-start";
+  const main=document.createElement("div");main.className="item-main";
+  const title=document.createElement("div");title.className="item-title";title.textContent=item.title;
+  const meta=document.createElement("div");meta.className="muted";meta.textContent=(item.author_name||"Müəllif")+" · "+(labels[item.category]||item.category)+" · "+item.language.toUpperCase()+" · "+item.status+" · "+new Date(item.created_at).toLocaleString();
+  const excerpt=document.createElement("p");excerpt.className="muted";excerpt.textContent=item.excerpt;
+  const body=document.createElement("details");body.style.marginTop="10px";const summary=document.createElement("summary");summary.textContent="Tam mətni oxu";summary.style.cursor="pointer";const full=document.createElement("div");full.className="muted";full.style.cssText="white-space:pre-wrap;margin-top:10px;line-height:1.8";full.textContent=item.body;body.append(summary,full);
+  main.append(title,meta,excerpt,body);if(item.contact_email){const mail=document.createElement("div");mail.className="muted";mail.textContent="Əlaqə: "+item.contact_email;main.append(mail);}
+  const actions=document.createElement("div");actions.className="item-actions";
+  if(item.status==="pending"){
+   const approve=document.createElement("button");approve.textContent="Təsdiqlə və dərc et";approve.onclick=()=>publishJournalSubmission(item);actions.append(approve);
+   const reject=document.createElement("button");reject.className="danger";reject.textContent="Rədd et";reject.onclick=()=>moderateJournalSubmission(item.id,"rejected");actions.append(reject);
+  } else if(item.status==="approved"&&item.published_content_id){const live=document.createElement("span");live.className="muted";live.textContent="Jurnalda dərc olunub";actions.append(live);}
+  card.append(main,actions);box.append(card);
+ });
+}
+async function publishJournalSubmission(item){
+ if(!confirm("Bu yazını NATIG ARCHIVE jurnalında dərc etmək istəyirsən?"))return;
+ try{
+  const {data:created,error:insertError}=await db.from("archive_content").insert({
+   title:item.title,category:"journal",language:item.language,description:item.excerpt,content:item.body,
+   image_url:item.image_url,author_name:item.author_name,journal_type:item.category,published:true
+  }).select("id").single();
+  if(insertError)throw insertError;
+  const {error:updateError}=await db.from("journal_submissions").update({status:"approved",published_content_id:created.id,published_at:new Date().toISOString()}).eq("id",item.id);
+  if(updateError){await db.from("archive_content").delete().eq("id",created.id);throw updateError;}
+  showStatus("Yazı təsdiqləndi və NATIG ARCHIVE jurnalında dərc olundu.");await loadJournalSubmissions();await loadContent();
+ }catch(err){showStatus("Dərc xətası: "+err.message,true);}
+}
+async function moderateJournalSubmission(id,status){
+ if(!confirm("Bu müraciəti rədd etmək istəyirsən?"))return;
+ const {error}=await db.from("journal_submissions").update({status}).eq("id",id);
+ if(error)showStatus("Status yenilənmədi: "+error.message,true);else showStatus("Müraciət rədd edildi.");
+ await loadJournalSubmissions();
+}
+$("refreshJournal").onclick=loadJournalSubmissions;
+
 async function loadMemories(){
  const box=$("memoryAdminList");box.textContent="Xatirələr yüklənir...";
  const {data,error}=await db.from("memory_submissions").select("id,display_name,memory_text,contribution_amount,currency,payment_method,payment_status,moderation_status,created_at").order("created_at",{ascending:false}).limit(200);
