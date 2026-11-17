@@ -53,19 +53,22 @@ textarea{min-height:125px;resize:vertical}input:focus,textarea:focus{border-colo
 footer{border-top:1px solid var(--line);padding:25px 0;color:#777168;font-size:9px;letter-spacing:2px;display:flex;justify-content:space-between;gap:12px}
 @media(max-width:760px){.notes{grid-template-columns:1fr;max-width:440px;margin:auto}.note{min-height:145px}.wall-frame{padding:25px 18px}.wall-head{display:block}.wall-count{display:block;margin-top:10px}.hero{padding-top:65px}.form-card{padding:23px}}
 @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
+
+.wall-tools{display:flex;align-items:center;gap:20px}.wall-langs{display:flex;gap:5px}.wall-langs button{background:transparent;border:0;border-bottom:1px solid transparent;color:#aaa092;padding:7px 5px;font-size:10px;letter-spacing:1px;cursor:pointer}.wall-langs button.active{color:var(--gold);border-color:var(--gold)}
+@media(max-width:520px){.wall-tools{gap:10px;flex-wrap:wrap;justify-content:flex-end}.wall-langs button{padding:6px 3px}}
 </style>
 </head>
 <body>
 <header><div class="wrap nav">
 <a class="brand" href="index.html"><svg viewBox="0 0 48 48" fill="none" aria-hidden="true"><path d="M8 8 19 14 24 11 29 14 40 8 37 29 32 38 24 42 16 38 11 29Z" stroke="currentColor" stroke-width="1.7"/><path d="m8 8 4 15 8-5 4 4 4-4 8 5 4-15M16 25l8 8 8-8" stroke="currentColor" stroke-width="1.7"/><circle cx="18.5" cy="24" r="2" fill="currentColor"/><circle cx="29.5" cy="24" r="2" fill="currentColor"/></svg>NATIG ARCHIVE</a>
-<a class="back" href="index.html">← Arxivə qayıt</a>
+<div class="wall-tools"><div class="wall-langs"><button type="button" data-lang="az" class="active">AZ</button><button type="button" data-lang="tr">TR</button><button type="button" data-lang="en">EN</button><button type="button" data-lang="ru">RU</button></div><a class="back" href="index.html" data-i="back">← Arxivə qayıt</a></div>
 </div></header>
 <main>
 <section class="hero">
 <div class="wrap">
-<div class="eyebrow">NATIG ARCHIVE · MEMORY WALL</div>
-<h1>Xatirə Divarı</h1>
-<p class="lead">“Bəzi insanlar bir cümlə ilə gəlir, amma izləri uzun müddət qalır.”</p>
+<div class="eyebrow" data-i="eyebrow">NATIG ARCHIVE · MEMORY WALL</div>
+<h1 data-i="title">Xatirə Divarı</h1>
+<p class="lead" data-i="lead">“Bəzi insanlar bir cümlə ilə gəlir, amma izləri uzun müddət qalır.”</p>
 <svg class="hero-symbol" viewBox="0 0 420 245" role="img" aria-label="Xatirə divarını simvolizə edən açıq arxiv qapısı, ulduz və lələk">
 <defs><linearGradient id="door" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#c6a879"/><stop offset="1" stop-color="#6e5636"/></linearGradient><radialGradient id="glow"><stop stop-color="#c6a879" stop-opacity=".3"/><stop offset="1" stop-color="#c6a879" stop-opacity="0"/></radialGradient></defs>
 <ellipse cx="210" cy="130" rx="165" ry="110" fill="url(#glow)"/>
@@ -80,32 +83,42 @@ footer{border-top:1px solid var(--line);padding:25px 0;color:#777168;font-size:9
 <path d="M85 210c-15-7-23-18-25-33 15 3 26 11 31 25m-6-16 21 22m229-5c15-7 23-18 25-33-15 3-26 11-31 25m6-16-21 22" fill="none" stroke="#8e7858" stroke-width="1.2"/>
 <path d="M180 222h60" stroke="#c6a879" stroke-width="1" opacity=".7"/>
 </svg>
-<div class="hero-foot">HƏR İZ BİR XATİRƏDİR · HƏR XATİRƏ BİR HEKAYƏ</div>
+<div class="hero-foot" data-i="heroFoot">HƏR İZ BİR XATİRƏDİR · HƏR XATİRƏ BİR HEKAYƏ</div>
 </div></section>
 <section class="wall"><div class="wrap">
-<div class="wall-head"><div><div class="kicker">THE MEMORY ARCHIVE</div><h2>Burada izlər qalır</h2></div><div class="wall-count">AÇIQ ARXİV · HƏR KƏS ÜÇÜN</div></div>
+<div class="wall-head"><div><div class="kicker" data-i="wallKicker">THE MEMORY ARCHIVE</div><h2 data-i="wallTitle">Burada izlər qalır</h2></div><div class="wall-count" data-i="wallCount">AÇIQ ARXİV · HƏR KƏS ÜÇÜN</div></div>
 <div class="wall-frame"><div class="notes" id="memoryNotes">
-<div class="empty-note"><svg viewBox="0 0 80 80" fill="none" aria-hidden="true"><path d="M16 18h48v45H16z" stroke="currentColor"/><path d="M25 29h30M25 38h23M25 47h27" stroke="currentColor"/><path d="m40 6 3 7 7 3-7 3-3 7-3-7-7-3 7-3Z" fill="currentColor"/></svg><strong>İlk iz hələ gözlənilir.</strong><span>Bu divarda sənin də bir yerin var.</span></div>
+<div class="empty-note"><svg viewBox="0 0 80 80" fill="none" aria-hidden="true"><path d="M16 18h48v45H16z" stroke="currentColor"/><path d="M25 29h30M25 38h23M25 47h27" stroke="currentColor"/><path d="m40 6 3 7 7 3-7 3-3 7-3-7-7-3 7-3Z" fill="currentColor"/></svg><strong data-i="emptyTitle">İlk iz hələ gözlənilir.</strong><span data-i="emptyText">Bu divarda sənin də bir yerin var.</span></div>
 </div></div>
 </div></section>
-<section class="invite"><div class="wrap"><div class="kicker">LEAVE A TRACE</div><h2>Sən də bir iz burax.</h2><p>Bir cümlə, bir xatirə, bir arzu... Bəzən kiçik bir söz belə illər sonra kiminsə yadında qalır.</p><button class="button" id="openMemory" type="button">✦ XATİRƏMİ YAZ</button></div></section>
+<section class="invite"><div class="wrap"><div class="kicker" data-i="inviteKicker">LEAVE A TRACE</div><h2 data-i="inviteTitle">Sən də bir iz burax.</h2><p data-i="inviteText">Bir cümlə, bir xatirə, bir arzu... Bəzən kiçik bir söz belə illər sonra kiminsə yadında qalır.</p><button class="button" id="openMemory" type="button" data-i="openButton">✦ XATİRƏMİ YAZ</button></div></section>
 <section class="form-area" id="writeMemory"><div class="wrap"><div class="form-card">
-<h3>İzini burax</h3><p>Adını və sənin üçün mənası olan bir cümləni yaz. Sonra xatirənin ön baxışını görəcəksən.</p>
-<form id="memoryForm"><label for="memoryName">Adın və ya təxəllüsün</label><input id="memoryName" maxlength="60" placeholder="Məsələn: Gecə oxucusu" required>
-<label for="memoryText">Xatirən</label><textarea id="memoryText" maxlength="500" placeholder="Burada səndən bir iz qalsın..." required></textarea>
-<div class="form-actions"><button class="button" type="submit">ÖN BAXIŞI YARAT</button><button class="button" type="button" id="cancelMemory">BAĞLA</button></div></form>
-<div class="preview" id="memoryPreview"><small>NATIG ARCHIVE · XATİRƏ DİVARI</small><p id="previewText"></p><strong id="previewName"></strong></div>
+<h3 data-i="formTitle">İzini burax</h3><p data-i="formIntro">Adını və sənin üçün mənası olan bir cümləni yaz. Sonra xatirənin ön baxışını görəcəksən.</p>
+<form id="memoryForm"><label for="memoryName" data-i="nameLabel">Adın və ya təxəllüsün</label><input id="memoryName" maxlength="60" data-ph="namePlaceholder" placeholder="Məsələn: Gecə oxucusu" required>
+<label for="memoryText" data-i="memoryLabel">Xatirən</label><textarea id="memoryText" maxlength="500" data-ph="memoryPlaceholder" placeholder="Burada səndən bir iz qalsın..." required></textarea>
+<div class="form-actions"><button class="button" type="submit" data-i="previewButton">ÖN BAXIŞI YARAT</button><button class="button" type="button" id="cancelMemory" data-i="closeButton">BAĞLA</button></div></form>
+<div class="preview" id="memoryPreview"><small data-i="previewLabel">NATIG ARCHIVE · XATİRƏ DİVARI</small><p id="previewText"></p><strong id="previewName"></strong></div>
 <div class="payment-panel" id="paymentPanel">
-<label for="memoryAmount">Dəstək məbləği</label><input id="memoryAmount" type="number" min="1" max="50000" step="0.01" placeholder="İstədiyin məbləği yaz">
-<label for="memoryMethod">Ödəniş üsulu</label><select id="memoryMethod" style="width:100%;background:#090909;border:1px solid #39342c;color:#eee;padding:13px"><option value="enpara">Enpara · TRY (Türk lirəsi)</option><option value="kapital">Kapital Bank · AZN (Manat)</option></select>
-<div class="form-actions"><button class="button" id="submitMemory" type="button">İZİMİ BURAX</button></div>
+<label for="memoryAmount" data-i="amountLabel">Dəstək məbləği</label><input id="memoryAmount" type="number" min="1" max="50000" step="0.01" data-ph="amountPlaceholder" placeholder="İstədiyin məbləği yaz">
+<label for="memoryMethod" data-i="methodLabel">Ödəniş üsulu</label><select id="memoryMethod" style="width:100%;background:#090909;border:1px solid #39342c;color:#eee;padding:13px"><option value="enpara" data-i="enparaOption">Enpara · TRY (Türk lirəsi)</option><option value="kapital" data-i="kapitalOption">Kapital Bank · AZN (Manat)</option></select>
+<div class="form-actions"><button class="button" id="submitMemory" type="button" data-i="submitButton">İZİMİ BURAX</button></div>
 <div class="status-msg" id="memoryStatus" role="status" aria-live="polite"></div>
-<p class="notice">Məbləği özün müəyyən edirsən. Ödəniş bank hesabında yoxlanıldıqdan və xatirə admin tərəfindən təsdiqləndikdən sonra divarda yayımlanacaq.</p>
+<p class="notice" data-i="paymentNotice">Məbləği özün müəyyən edirsən. Ödəniş bank hesabında yoxlanıldıqdan və xatirə admin tərəfindən təsdiqləndikdən sonra divarda yayımlanacaq.</p>
 </div>
 </div></div></section>
 </main>
-<footer class="wrap"><span>NATIG ARCHIVE © 2026</span><span>HƏR İZİN BİR HEKAYƏSİ VAR</span></footer>
+<footer class="wrap"><span>NATIG ARCHIVE © 2026</span><span data-i="footerText">HƏR İZİN BİR HEKAYƏSİ VAR</span></footer>
 <script>
+const wallTranslations={"az":{"back":"← Arxivə qayıt","eyebrow":"NATIG ARCHIVE · XATİRƏ DİVARI","title":"Xatirə Divarı","lead":"“Bəzi insanlar bir cümlə ilə gəlir, amma izləri uzun müddət qalır.”","heroFoot":"HƏR İZ BİR XATİRƏDİR · HƏR XATİRƏ BİR HEKAYƏ","wallKicker":"XATİRƏ ARXİVİ","wallTitle":"Burada izlər qalır","wallCount":"AÇIQ ARXİV · HƏR KƏS ÜÇÜN","emptyTitle":"İlk iz hələ gözlənilir.","emptyText":"Bu divarda sənin də bir yerin var.","inviteKicker":"BİR İZ BURAX","inviteTitle":"Sən də bir iz burax.","inviteText":"Bir cümlə, bir xatirə, bir arzu... Bəzən kiçik bir söz belə illər sonra kiminsə yadında qalır.","openButton":"✦ XATİRƏMİ YAZ","formTitle":"İzini burax","formIntro":"Adını və sənin üçün mənası olan bir cümləni yaz. Sonra xatirənin ön baxışını görəcəksən.","nameLabel":"Adın və ya təxəllüsün","namePlaceholder":"Məsələn: Gecə oxucusu","memoryLabel":"Xatirən","memoryPlaceholder":"Burada səndən bir iz qalsın...","previewButton":"ÖN BAXIŞI YARAT","closeButton":"BAĞLA","previewLabel":"NATIG ARCHIVE · XATİRƏ DİVARI","amountLabel":"Dəstək məbləği","amountPlaceholder":"İstədiyin məbləği yaz","methodLabel":"Ödəniş üsulu","enparaOption":"Enpara · TRY (Türk lirəsi)","kapitalOption":"Kapital Bank · AZN (Manat)","submitButton":"İZİMİ BURAX","paymentNotice":"Məbləği özün müəyyən edirsən. Ödəniş bank hesabında yoxlanıldıqdan və xatirə admin tərəfindən təsdiqləndikdən sonra divarda yayımlanacaq.","footerText":"HƏR İZİN BİR HEKAYƏSİ VAR"},"tr":{"back":"← Arşive dön","eyebrow":"NATIG ARCHIVE · ANI DUVARI","title":"Anı Duvarı","lead":"“Bazı insanlar tek bir cümleyle gelir, ama izleri uzun süre kalır.”","heroFoot":"HER İZ BİR ANIDIR · HER ANI BİR HİKÂYEDİR","wallKicker":"ANI ARŞİVİ","wallTitle":"İzler burada kalır","wallCount":"AÇIK ARŞİV · HERKES İÇİN","emptyTitle":"İlk iz henüz bekleniyor.","emptyText":"Bu duvarda senin de bir yerin var.","inviteKicker":"BİR İZ BIRAK","inviteTitle":"Sen de bir iz bırak.","inviteText":"Bir cümle, bir anı, bir dilek... Bazen küçük bir söz bile yıllar sonra birinin aklında kalır.","openButton":"✦ ANIMI YAZ","formTitle":"İzini bırak","formIntro":"Adını veya takma adını ve senin için anlamlı bir cümleyi yaz. Ardından anının ön izlemesini göreceksin.","nameLabel":"Adın veya takma adın","namePlaceholder":"Örneğin: Gece okuru","memoryLabel":"Anın","memoryPlaceholder":"Burada senden bir iz kalsın...","previewButton":"ÖN İZLEME OLUŞTUR","closeButton":"KAPAT","previewLabel":"NATIG ARCHIVE · ANI DUVARI","amountLabel":"Destek tutarı","amountPlaceholder":"İstediğin tutarı yaz","methodLabel":"Ödeme yöntemi","enparaOption":"Enpara · TRY (Türk lirası)","kapitalOption":"Kapital Bank · AZN (Manat)","submitButton":"İZİMİ BIRAK","paymentNotice":"Tutarı kendin belirlersin. Anın, banka ödemesi kontrol edildikten ve yönetici tarafından onaylandıktan sonra duvarda yayımlanır.","footerText":"HER İZİN BİR HİKÂYESİ VAR"},"en":{"back":"← Back to archive","eyebrow":"NATIG ARCHIVE · MEMORY WALL","title":"Memory Wall","lead":"“Some people arrive with a single sentence, yet their traces remain for a long time.”","heroFoot":"EVERY TRACE IS A MEMORY · EVERY MEMORY IS A STORY","wallKicker":"THE MEMORY ARCHIVE","wallTitle":"Traces remain here","wallCount":"OPEN ARCHIVE · FOR EVERYONE","emptyTitle":"The first trace is still awaited.","emptyText":"There is a place for you on this wall too.","inviteKicker":"LEAVE A TRACE","inviteTitle":"Leave your own trace.","inviteText":"A sentence, a memory, a wish... Sometimes even a small word stays with someone for years.","openButton":"✦ WRITE MY MEMORY","formTitle":"Leave your trace","formIntro":"Write your name or a pseudonym and a sentence that matters to you. Then preview your memory.","nameLabel":"Name or pseudonym","namePlaceholder":"For example: Night reader","memoryLabel":"Your memory","memoryPlaceholder":"Leave a trace of yourself here...","previewButton":"CREATE PREVIEW","closeButton":"CLOSE","previewLabel":"NATIG ARCHIVE · MEMORY WALL","amountLabel":"Contribution amount","amountPlaceholder":"Enter any amount you wish","methodLabel":"Payment method","enparaOption":"Enpara · TRY (Turkish lira)","kapitalOption":"Kapital Bank · AZN (Manat)","submitButton":"LEAVE MY TRACE","paymentNotice":"You choose the amount. Your memory will be published after the bank transfer is checked and an administrator approves it.","footerText":"EVERY TRACE HAS A STORY"},"ru":{"back":"← Вернуться в архив","eyebrow":"NATIG ARCHIVE · СТЕНА ВОСПОМИНАНИЙ","title":"Стена воспоминаний","lead":"«Некоторые приходят с одной фразой, но оставляют след надолго».","heroFoot":"КАЖДЫЙ СЛЕД — ВОСПОМИНАНИЕ · КАЖДОЕ ВОСПОМИНАНИЕ — ИСТОРИЯ","wallKicker":"АРХИВ ВОСПОМИНАНИЙ","wallTitle":"Здесь остаются следы","wallCount":"ОТКРЫТЫЙ АРХИВ · ДЛЯ ВСЕХ","emptyTitle":"Первый след ещё ожидается.","emptyText":"На этой стене есть место и для тебя.","inviteKicker":"ОСТАВЬ СЛЕД","inviteTitle":"Оставь и ты свой след.","inviteText":"Одно предложение, воспоминание, желание... Иногда даже маленькое слово остаётся в памяти на долгие годы.","openButton":"✦ ЗАПИСАТЬ ВОСПОМИНАНИЕ","formTitle":"Оставь свой след","formIntro":"Напиши имя или псевдоним и фразу, которая важна для тебя. Затем ты увидишь предварительный просмотр.","nameLabel":"Имя или псевдоним","namePlaceholder":"Например: Ночной читатель","memoryLabel":"Твоё воспоминание","memoryPlaceholder":"Оставь здесь частичку себя...","previewButton":"СОЗДАТЬ ПРЕДПРОСМОТР","closeButton":"ЗАКРЫТЬ","previewLabel":"NATIG ARCHIVE · СТЕНА ВОСПОМИНАНИЙ","amountLabel":"Сумма поддержки","amountPlaceholder":"Введи любую сумму","methodLabel":"Способ оплаты","enparaOption":"Enpara · TRY (турецкая лира)","kapitalOption":"Kapital Bank · AZN (манат)","submitButton":"ОСТАВИТЬ СЛЕД","paymentNotice":"Ты сам выбираешь сумму. Воспоминание появится на стене после проверки банковского перевода и одобрения администратором.","footerText":"У КАЖДОГО СЛЕДА ЕСТЬ ИСТОРИЯ"}};
+function setWallLanguage(lang){
+ const T=wallTranslations[lang]||wallTranslations.az;
+ document.documentElement.lang=lang;
+ document.querySelectorAll('[data-i]').forEach(el=>{const k=el.dataset.i;if(T[k])el.textContent=T[k];});
+ document.querySelectorAll('[data-ph]').forEach(el=>{const k=el.dataset.ph;if(T[k])el.placeholder=T[k];});
+ document.querySelectorAll('[data-lang]').forEach(b=>b.classList.toggle('active',b.dataset.lang===lang));
+}
+document.querySelectorAll('[data-lang]').forEach(b=>b.addEventListener('click',()=>setWallLanguage(b.dataset.lang)));
+setWallLanguage('az');
 const SUPABASE_URL='https://kmgfziafzuibfhfotyip.supabase.co',SUPABASE_KEY='sb_publishable_G1seS69IYPVaw-rq3Danuw__mU7C_aw';
 const openBtn=document.getElementById('openMemory'),area=document.getElementById('writeMemory'),form=document.getElementById('memoryForm'),preview=document.getElementById('memoryPreview'),paymentPanel=document.getElementById('paymentPanel');
 let draftMemory=null;
@@ -114,16 +127,16 @@ document.getElementById('cancelMemory').addEventListener('click',()=>{area.class
 form.addEventListener('submit',e=>{e.preventDefault();draftMemory={display_name:document.getElementById('memoryName').value.trim(),memory_text:document.getElementById('memoryText').value.trim()};document.getElementById('previewName').textContent=draftMemory.display_name;document.getElementById('previewText').textContent='“'+draftMemory.memory_text+'”';preview.classList.add('show');paymentPanel.classList.add('show');paymentPanel.scrollIntoView({behavior:'smooth',block:'center'});});
 document.getElementById('submitMemory').addEventListener('click',async()=>{
  const status=document.getElementById('memoryStatus'),button=document.getElementById('submitMemory'),amount=Number(document.getElementById('memoryAmount').value),method=document.getElementById('memoryMethod').value;
- if(!draftMemory){status.textContent='Əvvəlcə xatirəni yaz və ön baxışı yarat.';return;}
- if(!Number.isFinite(amount)||amount<1||amount>50000){status.textContent='Məbləğ 1-dən 50 000-ə qədər olmalıdır.';return;}
+ if(!draftMemory){status.textContent=({az:'Əvvəlcə xatirəni yaz və ön baxışı yarat.',tr:'Önce anını yaz ve ön izlemeyi oluştur.',en:'Write your memory and create a preview first.',ru:'Сначала напиши воспоминание и создай предпросмотр.'})[document.documentElement.lang];return;}
+ if(!Number.isFinite(amount)||amount<1||amount>50000){status.textContent=({az:'Məbləğ 1-dən 50 000-ə qədər olmalıdır.',tr:'Tutar 1 ile 50.000 arasında olmalıdır.',en:'The amount must be between 1 and 50,000.',ru:'Сумма должна быть от 1 до 50 000.'})[document.documentElement.lang];return;}
  button.disabled=true;status.textContent='Xatirən arxivə göndərilir...';
  try{
   const currency=method==='enpara'?'TRY':'AZN';
   const response=await fetch(SUPABASE_URL+'/rest/v1/memory_submissions',{method:'POST',headers:{apikey:SUPABASE_KEY,'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify({...draftMemory,contribution_amount:amount,currency,payment_method:method})});
   if(!response.ok){const detail=await response.text();throw new Error(detail||'Sorğu qeydə alınmadı.');}
-  status.textContent='Xatirən qeydə alındı. Ödəniş məlumatları admin tərəfindən dəqiqləşdirildikdən sonra köçürmə edə bilərsən. Bank daxilolması yoxlanıldıqdan və xatirən təsdiqləndikdən sonra divarda yayımlanacaq.';
+  status.textContent=({az:'Xatirən qeydə alındı. Ödəniş məlumatları admin tərəfindən dəqiqləşdirildikdən sonra köçürmə edə bilərsən. Bank daxilolması yoxlanıldıqdan və xatirən təsdiqləndikdən sonra divarda yayımlanacaq.',tr:'Anın kaydedildi. Ödeme bilgileri yönetici tarafından netleştirildikten sonra transfer yapabilirsin. Banka girişi kontrol edilip anın onaylandıktan sonra duvarda yayımlanacak.',en:'Your memory has been submitted. You can transfer after the administrator confirms the payment details. It will appear on the wall after the transfer is verified and your memory is approved.',ru:'Твоё воспоминание сохранено. Перевод можно сделать после уточнения платёжных реквизитов администратором. Оно появится на стене после проверки перевода и одобрения.',})[document.documentElement.lang]||'Your memory has been submitted.';
   button.textContent='SORĞU GÖNDƏRİLDİ';form.reset();document.getElementById('memoryAmount').value='';
- }catch(error){status.textContent='Xəta: '+error.message;button.disabled=false;}
+ }catch(error){status.textContent=({az:'Xəta: ',tr:'Hata: ',en:'Error: ',ru:'Ошибка: '})[document.documentElement.lang]+error.message;button.disabled=false;}
 });
 async function loadApprovedMemories(){
  const box=document.getElementById('memoryNotes');
