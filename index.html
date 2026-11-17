@@ -176,13 +176,32 @@ document.querySelector(".hero .button").addEventListener("click",e=>{e.preventDe
  let session=null, poll=null;
  try{session=JSON.parse(localStorage.getItem(storageKey)||"null")}catch(_){}
  const panel=$("naChatPanel"),log=$("naChatLog"),start=$("naChatStart"),form=$("naChatForm");
+ const chatText={
+  az:{launch:"Canlı dəstək",small:"CANLI DƏSTƏK",label:"Canlı dəstək söhbəti",close:"Bağla",welcome:"Salam. Sualını və ya mesajını bizə göndər, sənə buradan cavab verək.",name:"Adın",first:"Mesajını yaz...",begin:"MESAJI GÖNDƏR",message:"Mesajını yaz...",send:"GÖNDƏR",hint:"Mesajların yalnız NATIG ARCHIVE dəstək panelində görünür. ",email:"E-poçt göndər",failed:"Mesaj göndərilmədi. Bir az sonra yenidən yoxla.",failedReply:"Mesaj göndərilmədi. Söhbət bağlı ola bilər."},
+  tr:{launch:"Canlı destek",small:"CANLI DESTEK",label:"Canlı destek sohbeti",close:"Kapat",welcome:"Merhaba. Sorunu veya mesajını bize gönder, buradan sana yanıt verelim.",name:"Adın",first:"Mesajını yaz...",begin:"MESAJI GÖNDER",message:"Mesajını yaz...",send:"GÖNDER",hint:"Mesajların yalnızca NATIG ARCHIVE destek panelinde görünür. ",email:"E-posta gönder",failed:"Mesaj gönderilemedi. Biraz sonra tekrar dene.",failedReply:"Mesaj gönderilemedi. Sohbet kapatılmış olabilir."},
+  en:{launch:"Live support",small:"LIVE SUPPORT",label:"Live support chat",close:"Close",welcome:"Hello. Send us your question or message and we'll reply here.",name:"Your name",first:"Write your message...",begin:"SEND MESSAGE",message:"Write your message...",send:"SEND",hint:"Your messages are visible only in the NATIG ARCHIVE support panel. ",email:"Send an email",failed:"Message could not be sent. Please try again shortly.",failedReply:"Message could not be sent. The conversation may be closed."},
+  ru:{launch:"Онлайн-поддержка",small:"ОНЛАЙН-ПОДДЕРЖКА",label:"Чат поддержки",close:"Закрыть",welcome:"Здравствуйте. Отправьте нам вопрос или сообщение, и мы ответим здесь.",name:"Ваше имя",first:"Введите сообщение...",begin:"ОТПРАВИТЬ",message:"Введите сообщение...",send:"ОТПРАВИТЬ",hint:"Ваши сообщения видны только в панели поддержки NATIG ARCHIVE. ",email:"Написать на почту",failed:"Не удалось отправить сообщение. Попробуйте позже.",failedReply:"Не удалось отправить сообщение. Возможно, чат закрыт."}
+ };
+ function applyChatLanguage(){
+  const t=chatText[document.documentElement.lang]||chatText.az;
+  $("naChatLaunch").textContent=t.launch;$("naChatPanel").setAttribute("aria-label",t.label);
+  $("naChatPanel").querySelector(".chat-head small").textContent=t.small;
+  $("naChatClose").setAttribute("aria-label",t.close);
+  start.querySelector("p").textContent=t.welcome;
+  $("naChatName").placeholder=t.name;$("naChatFirst").placeholder=t.first;
+  $("naChatBegin").textContent=t.begin;$("naChatMessage").placeholder=t.message;
+  form.querySelector("button").textContent=t.send;
+  const hint=document.querySelector("#naChatPanel .chat-hint");hint.textContent=t.hint;
+  const mail=document.createElement("a");mail.href="mailto:natigmisirzade@gmail.com";mail.style.cssText="color:var(--gold);text-decoration:underline";mail.textContent=t.email;hint.append(mail);
+ }
+ document.addEventListener("na-language-change",applyChatLanguage);applyChatLanguage();
  $("naChatLaunch").onclick=()=>{panel.classList.toggle("open");if(panel.classList.contains("open")){if(session?.id&&session?.token)resume();else $("naChatName").focus()}};
  $("naChatClose").onclick=()=>panel.classList.remove("open");
  function bubble(m){const d=document.createElement("div");d.className="chat-bubble "+(m.sender==="admin"?"admin":"visitor");d.textContent=m.message;const t=document.createElement("span");t.className="chat-time";t.textContent=new Date(m.created_at).toLocaleString();d.append(t);return d;}
  async function refresh(){if(!session)return;const {data,error}=await db.rpc("chat_visitor_messages",{p_conversation_id:session.id,p_token:session.token});if(error)return;const bottom=log.scrollHeight-log.scrollTop-log.clientHeight<70;log.replaceChildren(...(data||[]).map(bubble));if(bottom)log.scrollTop=log.scrollHeight;}
  function resume(){start.hidden=true;log.hidden=false;form.hidden=false;refresh();if(poll)clearInterval(poll);poll=setInterval(refresh,3500);}
- $("naChatBegin").onclick=async()=>{const name=$("naChatName").value.trim(),message=$("naChatFirst").value.trim();if(!name||!message)return;const b=$("naChatBegin");b.disabled=true;try{const {data,error}=await db.rpc("chat_start",{p_name:name,p_message:message});if(error)throw error;session={id:data.conversation_id,token:data.token};localStorage.setItem(storageKey,JSON.stringify(session));$("naChatFirst").value="";resume();}catch(e){alert("Mesaj göndərilmədi. Bir az sonra yenidən yoxla.");}finally{b.disabled=false;}};
- form.onsubmit=async e=>{e.preventDefault();const input=$("naChatMessage"),message=input.value.trim();if(!message||!session)return;const b=form.querySelector("button");b.disabled=true;try{const {data,error}=await db.rpc("chat_visitor_send",{p_conversation_id:session.id,p_token:session.token,p_message:message});if(error||!data)throw error||new Error("Söhbət bağlıdır");input.value="";await refresh();}catch(_){alert("Mesaj göndərilmədi. Söhbət bağlı ola bilər.");}finally{b.disabled=false;}};
+ $("naChatBegin").onclick=async()=>{const name=$("naChatName").value.trim(),message=$("naChatFirst").value.trim();if(!name||!message)return;const b=$("naChatBegin");b.disabled=true;try{const {data,error}=await db.rpc("chat_start",{p_name:name,p_message:message});if(error)throw error;session={id:data.conversation_id,token:data.token};localStorage.setItem(storageKey,JSON.stringify(session));$("naChatFirst").value="";resume();}catch(e){alert((chatText[document.documentElement.lang]||chatText.az).failed);}finally{b.disabled=false;}};
+ form.onsubmit=async e=>{e.preventDefault();const input=$("naChatMessage"),message=input.value.trim();if(!message||!session)return;const b=form.querySelector("button");b.disabled=true;try{const {data,error}=await db.rpc("chat_visitor_send",{p_conversation_id:session.id,p_token:session.token,p_message:message});if(error||!data)throw error||new Error("Söhbət bağlıdır");input.value="";await refresh();}catch(_){alert((chatText[document.documentElement.lang]||chatText.az).failedReply);}finally{b.disabled=false;}};
  if(session?.id&&session?.token)resume();
 })();
 </script></body></html>
