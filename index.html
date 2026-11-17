@@ -146,15 +146,80 @@ document.querySelector(".hero .button").addEventListener("click",e=>{e.preventDe
   if(!stories.length&&!groups.journal.length)jroot.append(make("p","magazine-empty","Ədəbi arxivdə hələlik yayımlanmış əsər yoxdur."));
 
  }
+ function ensureCheckout(){
+  if(document.getElementById("naCheckout"))return;
+  const style=make("style");style.textContent=`
+  .na-buy{margin-top:15px;width:100%;padding:12px 14px;background:transparent;border:1px solid #8e7858;color:#e9e2d7;font-size:10px;letter-spacing:1.6px;cursor:pointer}
+  .na-buy:hover{background:#c6a879;color:#090909}.na-prices{display:flex;gap:12px;flex-wrap:wrap;margin-top:10px;color:#c6a879;font-size:11px}
+  .na-checkout{position:fixed;inset:0;z-index:220;background:#050505eF;display:none;align-items:center;justify-content:center;padding:18px}
+  .na-checkout.open{display:flex}.na-checkout-box{position:relative;width:min(480px,100%);max-height:90vh;overflow:auto;background:#11100e;border:1px solid #655238;padding:30px;box-shadow:0 25px 90px #000}
+  .na-checkout-box h3{font:30px Georgia,serif;font-weight:400;margin:8px 0 12px}.na-checkout-box p{color:#aaa49a;font-size:13px;line-height:1.7}
+  .na-checkout-box label{display:block;color:#c6a879;font-size:10px;letter-spacing:1.5px;margin:17px 0 7px;text-transform:uppercase}
+  .na-checkout-box input,.na-checkout-box select{width:100%;padding:13px;background:#080808;border:1px solid #39342c;color:#eee;font-size:13px}
+  .na-checkout-actions{display:flex;gap:10px;margin-top:22px}.na-checkout-actions button{flex:1;padding:13px;border:1px solid #8e7858;background:#c6a879;color:#111;font-size:10px;letter-spacing:1.2px;cursor:pointer}
+  .na-checkout-actions button.secondary{background:transparent;color:#eee}.na-checkout-result{margin-top:18px;padding:15px;border:1px solid #655238;background:#17140f;overflow-wrap:anywhere}
+  .na-checkout-result strong{color:#d6b77f}.na-checkout-close{position:absolute;right:14px;top:10px;background:none;border:0;color:#c6a879;font-size:25px;cursor:pointer}
+  .na-muted{font-size:11px!important;color:#81796d!important}
+  `;
+  document.head.append(style);
+  const modal=make("div","na-checkout");modal.id="naCheckout";
+  modal.innerHTML='<div class="na-checkout-box"><button class="na-checkout-close" type="button" aria-label="Bağla">×</button><div class="kicker">NATIG ARCHIVE / MARKET</div><h3 id="naCheckoutTitle">Sifariş</h3><p id="naCheckoutDesc"></p><form id="naCheckoutForm"><label for="naBuyerEmail">E-poçt ünvanı</label><input id="naBuyerEmail" type="email" maxlength="254" autocomplete="email" placeholder="name@example.com" required><label for="naPayMethod">Ödəniş üsulu</label><select id="naPayMethod" required><option value="enpara">Enpara · TRY (Türk lirəsi)</option><option value="kapital">Kapital Bank · AZN (Manat)</option></select><p class="na-muted">Sifariş kodu yaradıldıqdan sonra bank köçürməsi üçün təlimat göstəriləcək. Ödəniş yalnız bank hesabında daxilolma yoxlanıldıqdan sonra təsdiqlənir.</p><div class="na-checkout-actions"><button type="submit" id="naCheckoutSubmit">SİFARİŞ YARAT</button><button class="secondary" type="button" id="naCheckoutCancel">LƏĞV ET</button></div></form><div id="naCheckoutResult" class="na-checkout-result" hidden aria-live="polite"></div></div>';
+  document.body.append(modal);
+  const close=()=>{modal.classList.remove("open");};
+  modal.querySelector(".na-checkout-close").onclick=close;modal.querySelector("#naCheckoutCancel").onclick=close;
+  modal.onclick=e=>{if(e.target===modal)close();};
+  document.addEventListener("keydown",e=>{if(e.key==="Escape")close();});
+ }
+ let selectedMarketProduct=null;
+ function openCheckout(product){
+  ensureCheckout();selectedMarketProduct=product;
+  const modal=document.getElementById("naCheckout");
+  modal.querySelector("#naCheckoutTitle").textContent=product.name;
+  modal.querySelector("#naCheckoutDesc").textContent=product.description||"Rəqəmsal məhsul";
+  modal.querySelector("#naCheckoutResult").hidden=true;
+  modal.querySelector("#naCheckoutForm").hidden=false;
+  modal.querySelector("#naCheckoutForm").reset();
+  modal.querySelector("#naCheckout").value="";
+  modal.querySelector("#naCheckoutSubmit").disabled=false;
+  modal.querySelector("#naCheckoutSubmit").textContent="SİFARİŞ YARAT";
+  const method=modal.querySelector("#naPayMethod");
+  const enpara=Number(product.price_try||0)>0,kapital=Number(product.price_azn||0)>0;
+  [...method.options].forEach(o=>{o.disabled=o.value==="enpara"?!enpara:!kapital;});
+  method.value=enpara?"enpara":"kapital";
+  modal.classList.add("open");
+ }
+ async function submitMarketOrder(event){
+  event.preventDefault();
+  const modal=document.getElementById("naCheckout"),form=event.currentTarget;
+  const email=modal.querySelector("#naBuyerEmail").value.trim(),method=modal.querySelector("#naPayMethod").value;
+  const submit=modal.querySelector("#naCheckoutSubmit"),result=modal.querySelector("#naCheckoutResult");
+  if(!selectedMarketProduct)return;
+  submit.disabled=true;submit.textContent="GÖNDƏRİLİR...";
+  const {data,error}=await archiveDb.rpc("create_market_order",{p_product_id:selectedMarketProduct.id,p_customer_email:email,p_payment_method:method});
+  submit.disabled=false;submit.textContent="SİFARİŞ YARAT";
+  if(error){result.hidden=false;result.textContent="Sifariş yaradılmadı: "+error.message;return;}
+  const order=Array.isArray(data)?data[0]:data;
+  if(!order){result.hidden=false;result.textContent="Sifariş cavabı alınmadı. Yenidən yoxla.";return;}
+  form.hidden=true;result.hidden=false;
+  const amount=Number(order.amount).toFixed(2)+" "+order.currency;
+  result.innerHTML='<strong>Sifariş qeydə alındı</strong><p>Sifariş kodu: <strong></strong></p><p>Məbləğ: <strong></strong></p><p>Hazırda bank rekvizitləri sayta əlavə edilməyib. Köçürmə etmə; rekvizitlər əlavə ediləndə sifariş təlimatını yeniləyəcəyik.</p><p class="na-muted">Sifariş ödəniş təsdiqi deyil. Məbləğ bank hesabında yoxlanıldıqdan sonra admin tərəfindən təsdiqlənəcək.</p>';
+  result.querySelectorAll("strong")[1].textContent=order.order_code;
+  result.querySelectorAll("strong")[2].textContent=amount;
+ }
  async function loadMarket(){
-  const {data,error}=await archiveDb.from("market_products").select("id,name,description,price,image_url,category,active").eq("active",true).order("created_at",{ascending:false});
+  const {data,error}=await archiveDb.from("market_products").select("id,name,description,price,price_try,price_azn,image_url,category,active").eq("active",true).order("created_at",{ascending:false});
+  const root=document.querySelector(".products");if(!root)return;
   if(error){console.warn("NATIG ARCHIVE market:",error.message);return;}
-  if(!data||!data.length)return;
-  const root=document.querySelector(".products");if(!root)return;root.innerHTML="";
+  root.innerHTML="";
+  if(!data||!data.length){root.append(make("p","magazine-empty","Mağazada hələlik aktiv məhsul yoxdur. Məhsullar admin panelindən əlavə ediləndə burada görünəcək."));return;}
+  ensureCheckout();
   data.forEach(x=>{const category=(x.category||"other").toLowerCase().replace(/[^a-z0-9_-]/g,"-");const card=make("article","product");card.dataset.category=category;
    if(x.image_url){const im=make("img","product-art");im.src=x.image_url;im.alt=x.name;im.loading="lazy";im.style.cssText="width:100%;height:190px;object-fit:cover;display:block";card.append(im);}else card.append(make("div","product-art","N / A"));
-   const info=make("div","product-info");info.append(make("h3","",x.name));if(x.description)info.append(make("p","",x.description));info.append(make("p","demo",Number(x.price||0).toFixed(2)));card.append(info);root.append(card);
+   const info=make("div","product-info");info.append(make("h3","",x.name));if(x.description)info.append(make("p","",x.description));
+   const prices=make("div","na-prices");if(Number(x.price_try)>0)prices.append(make("span","",Number(x.price_try).toFixed(2)+" TRY"));if(Number(x.price_azn)>0)prices.append(make("span","",Number(x.price_azn).toFixed(2)+" AZN"));if(!prices.children.length)prices.append(make("span","na-muted","Qiymət təyin edilməyib"));info.append(prices);
+   const buy=make("button","na-buy","SİFARİŞ ET");buy.type="button";buy.disabled=!(Number(x.price_try)>0||Number(x.price_azn)>0);if(buy.disabled){buy.textContent="QİYMƏT GÖZLƏNİLİR";buy.style.opacity=".45";}buy.onclick=()=>openCheckout(x);info.append(buy);card.append(info);root.append(card);
   });
+  document.getElementById("naCheckoutForm").addEventListener("submit",submitMarketOrder);
   document.querySelectorAll("[data-filter]").forEach(b=>b.onclick=()=>{document.querySelectorAll("[data-filter]").forEach(x=>x.classList.remove("active"));b.classList.add("active");document.querySelectorAll(".product").forEach(p=>p.classList.toggle("hidden",b.dataset.filter!=="all"&&p.dataset.category!==b.dataset.filter));});
  }
  loadArchive();loadMarket();document.addEventListener("na-language-change",loadArchive);
