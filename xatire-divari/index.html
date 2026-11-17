@@ -49,7 +49,7 @@ textarea{min-height:125px;resize:vertical}input:focus,textarea:focus{border-colo
 .form-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}.form-actions .button{flex:1;justify-content:center}
 .preview{display:none;margin-top:22px;padding:20px;background:var(--paper);color:#332d24;transform:rotate(-.3deg)}
 .preview.show{display:block}.preview small{font-size:8px;letter-spacing:2px;color:#76664e}.preview p{font:italic 17px/1.6 Georgia,serif}.preview strong{font:13px Georgia,serif}
-.notice{font-size:10px!important;color:#8e8578!important;margin-top:16px!important;line-height:1.7}
+.payment-panel{display:none;margin-top:22px;padding-top:18px;border-top:1px solid var(--line)}.payment-panel.show{display:block}.status-msg{margin-top:14px;color:var(--gold);font-size:12px;line-height:1.7}.notice{font-size:10px!important;color:#8e8578!important;margin-top:16px!important;line-height:1.7}
 footer{border-top:1px solid var(--line);padding:25px 0;color:#777168;font-size:9px;letter-spacing:2px;display:flex;justify-content:space-between;gap:12px}
 @media(max-width:760px){.notes{grid-template-columns:1fr;max-width:440px;margin:auto}.note{min-height:145px}.wall-frame{padding:25px 18px}.wall-head{display:block}.wall-count{display:block;margin-top:10px}.hero{padding-top:65px}.form-card{padding:23px}}
 @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
@@ -95,14 +95,47 @@ footer{border-top:1px solid var(--line);padding:25px 0;color:#777168;font-size:9
 <label for="memoryText">Xatirən</label><textarea id="memoryText" maxlength="500" placeholder="Burada səndən bir iz qalsın..." required></textarea>
 <div class="form-actions"><button class="button" type="submit">ÖN BAXIŞI YARAT</button><button class="button" type="button" id="cancelMemory">BAĞLA</button></div></form>
 <div class="preview" id="memoryPreview"><small>NATIG ARCHIVE · XATİRƏ DİVARI</small><p id="previewText"></p><strong id="previewName"></strong></div>
-<p class="notice">Bu, hazırda dizayn və ön baxış mərhələsidir. Ödəniş, yadda saxlama və admin təsdiqi növbəti mərhələdə qoşulacaq. Heç bir məlumat hələlik sayta göndərilmir.</p>
+<div class="payment-panel" id="paymentPanel">
+<label for="memoryAmount">Dəstək məbləği</label><input id="memoryAmount" type="number" min="1" max="50000" step="0.01" placeholder="İstədiyin məbləği yaz">
+<label for="memoryMethod">Ödəniş üsulu</label><select id="memoryMethod" style="width:100%;background:#090909;border:1px solid #39342c;color:#eee;padding:13px"><option value="enpara">Enpara · TRY (Türk lirəsi)</option><option value="kapital">Kapital Bank · AZN (Manat)</option></select>
+<div class="form-actions"><button class="button" id="submitMemory" type="button">İZİMİ BURAX</button></div>
+<div class="status-msg" id="memoryStatus" role="status" aria-live="polite"></div>
+<p class="notice">Məbləği özün müəyyən edirsən. Ödəniş bank hesabında yoxlanıldıqdan və xatirə admin tərəfindən təsdiqləndikdən sonra divarda yayımlanacaq.</p>
+</div>
 </div></div></section>
 </main>
 <footer class="wrap"><span>NATIG ARCHIVE © 2026</span><span>HƏR İZİN BİR HEKAYƏSİ VAR</span></footer>
 <script>
-const openBtn=document.getElementById('openMemory'),area=document.getElementById('writeMemory'),form=document.getElementById('memoryForm'),preview=document.getElementById('memoryPreview');
+const SUPABASE_URL='https://kmgfziafzuibfhfotyip.supabase.co',SUPABASE_KEY='sb_publishable_G1seS69IYPVaw-rq3Danuw__mU7C_aw';
+const openBtn=document.getElementById('openMemory'),area=document.getElementById('writeMemory'),form=document.getElementById('memoryForm'),preview=document.getElementById('memoryPreview'),paymentPanel=document.getElementById('paymentPanel');
+let draftMemory=null;
 openBtn.addEventListener('click',()=>{area.classList.add('open');area.scrollIntoView({behavior:'smooth',block:'start'});document.getElementById('memoryName').focus({preventScroll:true});});
-document.getElementById('cancelMemory').addEventListener('click',()=>{area.classList.remove('open');preview.classList.remove('show');});
-form.addEventListener('submit',e=>{e.preventDefault();document.getElementById('previewName').textContent=document.getElementById('memoryName').value.trim();document.getElementById('previewText').textContent='“'+document.getElementById('memoryText').value.trim()+'”';preview.classList.add('show');preview.scrollIntoView({behavior:'smooth',block:'center'});});
+document.getElementById('cancelMemory').addEventListener('click',()=>{area.classList.remove('open');preview.classList.remove('show');paymentPanel.classList.remove('show');});
+form.addEventListener('submit',e=>{e.preventDefault();draftMemory={display_name:document.getElementById('memoryName').value.trim(),memory_text:document.getElementById('memoryText').value.trim()};document.getElementById('previewName').textContent=draftMemory.display_name;document.getElementById('previewText').textContent='“'+draftMemory.memory_text+'”';preview.classList.add('show');paymentPanel.classList.add('show');paymentPanel.scrollIntoView({behavior:'smooth',block:'center'});});
+document.getElementById('submitMemory').addEventListener('click',async()=>{
+ const status=document.getElementById('memoryStatus'),button=document.getElementById('submitMemory'),amount=Number(document.getElementById('memoryAmount').value),method=document.getElementById('memoryMethod').value;
+ if(!draftMemory){status.textContent='Əvvəlcə xatirəni yaz və ön baxışı yarat.';return;}
+ if(!Number.isFinite(amount)||amount<1||amount>50000){status.textContent='Məbləğ 1-dən 50 000-ə qədər olmalıdır.';return;}
+ button.disabled=true;status.textContent='Xatirən arxivə göndərilir...';
+ try{
+  const currency=method==='enpara'?'TRY':'AZN';
+  const response=await fetch(SUPABASE_URL+'/rest/v1/memory_submissions',{method:'POST',headers:{apikey:SUPABASE_KEY,'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify({...draftMemory,contribution_amount:amount,currency,payment_method:method})});
+  if(!response.ok){const detail=await response.text();throw new Error(detail||'Sorğu qeydə alınmadı.');}
+  status.textContent='Xatirən qeydə alındı. Ödəniş məlumatları admin tərəfindən dəqiqləşdirildikdən sonra köçürmə edə bilərsən. Bank daxilolması yoxlanıldıqdan və xatirən təsdiqləndikdən sonra divarda yayımlanacaq.';
+  button.textContent='SORĞU GÖNDƏRİLDİ';form.reset();document.getElementById('memoryAmount').value='';
+ }catch(error){status.textContent='Xəta: '+error.message;button.disabled=false;}
+});
+async function loadApprovedMemories(){
+ const box=document.getElementById('memoryNotes');
+ try{
+  const response=await fetch(SUPABASE_URL+'/rest/v1/memory_submissions?select=display_name,memory_text,created_at&payment_status=eq.verified&moderation_status=eq.approved&order=published_at.desc&limit=60',{headers:{apikey:SUPABASE_KEY}});
+  if(!response.ok)throw new Error('Yüklənmədi');
+  const rows=await response.json();if(!rows.length)return;
+  box.replaceChildren();
+  rows.forEach((item,i)=>{const card=document.createElement('article');card.className='note';card.style.transform='rotate('+(i%2?'1.2':'-1.2')+'deg)';const pin=document.createElement('span');pin.className='pin';const symbol=document.createElement('span');symbol.className='note-symbol';symbol.textContent='✦';const quote=document.createElement('p');quote.className='note-line';quote.textContent='“'+item.memory_text+'”';const name=document.createElement('strong');name.className='note-label';name.textContent=item.display_name;card.append(pin,symbol,quote,name);box.append(card);});
+ }
+ catch(e){console.warn('Xatirələr yüklənmədi',e);}
+}
+loadApprovedMemories();
 </script>
 </body></html>
