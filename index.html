@@ -42,6 +42,30 @@
 @media(max-width:700px){.owl-mark{width:29px;height:29px}}
 @media(prefers-reduced-motion:reduce){.owl-mark{transition:none}}
 
+
+/* NATIG ARCHIVE live support */
+.chat-launch{position:fixed;right:25px;bottom:24px;z-index:150;background:#c6a879;color:#111;border:0;border-radius:50px;padding:14px 19px;font-size:10px;letter-spacing:1.8px;text-transform:uppercase;box-shadow:0 8px 30px #0009;cursor:pointer}
+.chat-launch:hover{background:#e0c18f;transform:translateY(-2px)}
+.chat-panel{position:fixed;right:25px;bottom:84px;z-index:151;width:min(360px,calc(100vw - 30px));height:min(510px,calc(100dvh - 115px));background:#0e0e0d;border:1px solid #6f5b3e;box-shadow:0 20px 65px #000c;display:none;flex-direction:column}
+.chat-panel.open{display:flex}
+.chat-head{padding:17px 18px;border-bottom:1px solid #30291f;display:flex;justify-content:space-between;align-items:center}
+.chat-head strong{font:16px Georgia,serif;letter-spacing:1px;color:#d1b17e}.chat-head small{display:block;color:#898277;font-size:9px;letter-spacing:1.5px;margin-top:4px}
+.chat-close{background:none;border:0;color:#b9ad9b;font-size:23px;cursor:pointer}
+.chat-log{padding:16px;overflow:auto;flex:1;display:flex;flex-direction:column;gap:10px}
+.chat-bubble{max-width:85%;padding:10px 12px;font-size:12px;line-height:1.6;white-space:pre-wrap;overflow-wrap:anywhere}
+.chat-bubble.visitor{align-self:flex-end;background:#2a241b;color:#f1e7d6;border:1px solid #5b4930}
+.chat-bubble.admin{align-self:flex-start;background:#191919;color:#e8e3da;border:1px solid #34302a}
+.chat-time{display:block;color:#8e877c;font-size:9px;margin-top:4px}
+.chat-form{padding:13px;border-top:1px solid #30291f;display:flex;gap:8px}
+.chat-form input{min-width:0;flex:1;background:#090909;border:1px solid #39342c;color:#eee;padding:11px;font-size:12px;outline:none}
+.chat-form button{background:#c6a879;color:#111;border:0;padding:0 14px;font-size:10px;letter-spacing:1px;cursor:pointer}
+.chat-start{padding:18px;display:flex;flex-direction:column;gap:10px}
+.chat-start p{color:#aaa194;font:14px Georgia,serif;line-height:1.6;margin:0 0 4px}
+.chat-start input,.chat-start textarea{background:#090909;border:1px solid #39342c;color:#eee;padding:11px;font:12px Arial;resize:vertical}
+.chat-start textarea{min-height:82px}
+.chat-start button{background:#c6a879;color:#111;border:0;padding:12px;font-size:10px;letter-spacing:1.4px;cursor:pointer}
+.chat-hint{padding:0 15px 10px;color:#777064;font-size:9px;line-height:1.4}
+@media(max-width:520px){.chat-launch{right:15px;bottom:15px}.chat-panel{right:15px;bottom:72px}}
 </style><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script></head>
 <body>
 <header class="top"><div class="wrap nav"><a class="brand" href="#home"><svg class="owl-mark" viewBox="0 0 48 48" role="img" aria-label="NATIG ARCHIVE owl emblem"><path d="M8 8 19 14 24 11 29 14 40 8 37 29 32 38 24 42 16 38 11 29Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="m8 8 4 15 8-5 4 4 4-4 8 5 4-15M16 25l8 8 8-8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><circle cx="18.5" cy="24" r="2.2" fill="currentColor"/><circle cx="29.5" cy="24" r="2.2" fill="currentColor"/><path d="m22 31 2 3 2-3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg><span>NATIG ARCHIVE</span></a><nav class="links" id="navLinks"><a href="#ecosystem">Bölmələr</a><a href="#about" data-i="navAbout">Haqqında</a><a href="#cinema" data-i="navCinema">Kino & Araşdırma</a><a href="#journal" data-i="navJournal">Jurnal</a><a href="#works" data-i="navWorks">Ssenarilər</a><a href="#market">Market</a><a href="#mystery">Detektiv dosyelər</a><a href="#community">İcma</a><a href="#contact" data-i="navContact">Əlaqə</a></nav><div class="lang"><button class="active" data-lang="az">AZ</button><button data-lang="tr">TR</button><button data-lang="en">EN</button><button data-lang="ru">RU</button></div><button class="menu" id="menuBtn" aria-label="Menu">☰</button></div></header>
@@ -134,5 +158,31 @@ document.querySelector(".hero .button").addEventListener("click",e=>{e.preventDe
   document.querySelectorAll("[data-filter]").forEach(b=>b.onclick=()=>{document.querySelectorAll("[data-filter]").forEach(x=>x.classList.remove("active"));b.classList.add("active");document.querySelectorAll(".product").forEach(p=>p.classList.toggle("hidden",b.dataset.filter!=="all"&&p.dataset.category!==b.dataset.filter));});
  }
  loadArchive();loadMarket();document.addEventListener("na-language-change",loadArchive);
+})();
+</script>
+<button class="chat-launch" id="naChatLaunch" type="button">Canlı dəstək</button>
+<section class="chat-panel" id="naChatPanel" aria-label="Canlı dəstək söhbəti">
+ <header class="chat-head"><div><strong>NATIG ARCHIVE</strong><small>CANLI DƏSTƏK</small></div><button class="chat-close" id="naChatClose" aria-label="Bağla">×</button></header>
+ <div class="chat-start" id="naChatStart"><p>Salam. Sualını və ya mesajını bizə göndər, sənə buradan cavab verək.</p><input id="naChatName" maxlength="80" placeholder="Adın"><textarea id="naChatFirst" maxlength="2000" placeholder="Mesajını yaz..." required></textarea><button id="naChatBegin">MESAJI GÖNDƏR</button></div>
+ <div class="chat-log" id="naChatLog" hidden></div>
+ <form class="chat-form" id="naChatForm" hidden><input id="naChatMessage" maxlength="2000" placeholder="Mesajını yaz..." autocomplete="off" required><button type="submit">GÖNDƏR</button></form>
+ <div class="chat-hint">Mesajların yalnız NATIG ARCHIVE dəstək panelində görünür.</div>
+</section>
+<script>
+(()=> {
+ const URL="https://kmgfziafzuibfhfotyip.supabase.co",KEY="sb_publishable_G1seS69IYPVaw-rq3Danuw__mU7C_aw";
+ const db=window.supabase.createClient(URL,KEY);
+ const $=id=>document.getElementById(id), storageKey="na_chat_session_v1";
+ let session=null, poll=null;
+ try{session=JSON.parse(localStorage.getItem(storageKey)||"null")}catch(_){}
+ const panel=$("naChatPanel"),log=$("naChatLog"),start=$("naChatStart"),form=$("naChatForm");
+ $("naChatLaunch").onclick=()=>{panel.classList.toggle("open");if(panel.classList.contains("open")){if(session?.id&&session?.token)resume();else $("naChatName").focus()}};
+ $("naChatClose").onclick=()=>panel.classList.remove("open");
+ function bubble(m){const d=document.createElement("div");d.className="chat-bubble "+(m.sender==="admin"?"admin":"visitor");d.textContent=m.message;const t=document.createElement("span");t.className="chat-time";t.textContent=new Date(m.created_at).toLocaleString();d.append(t);return d;}
+ async function refresh(){if(!session)return;const {data,error}=await db.rpc("chat_visitor_messages",{p_conversation_id:session.id,p_token:session.token});if(error)return;const bottom=log.scrollHeight-log.scrollTop-log.clientHeight<70;log.replaceChildren(...(data||[]).map(bubble));if(bottom)log.scrollTop=log.scrollHeight;}
+ function resume(){start.hidden=true;log.hidden=false;form.hidden=false;refresh();if(poll)clearInterval(poll);poll=setInterval(refresh,3500);}
+ $("naChatBegin").onclick=async()=>{const name=$("naChatName").value.trim(),message=$("naChatFirst").value.trim();if(!name||!message)return;const b=$("naChatBegin");b.disabled=true;try{const {data,error}=await db.rpc("chat_start",{p_name:name,p_message:message});if(error)throw error;session={id:data.conversation_id,token:data.token};localStorage.setItem(storageKey,JSON.stringify(session));$("naChatFirst").value="";resume();}catch(e){alert("Mesaj göndərilmədi. Bir az sonra yenidən yoxla.");}finally{b.disabled=false;}};
+ form.onsubmit=async e=>{e.preventDefault();const input=$("naChatMessage"),message=input.value.trim();if(!message||!session)return;const b=form.querySelector("button");b.disabled=true;try{const {data,error}=await db.rpc("chat_visitor_send",{p_conversation_id:session.id,p_token:session.token,p_message:message});if(error||!data)throw error||new Error("Söhbət bağlıdır");input.value="";await refresh();}catch(_){alert("Mesaj göndərilmədi. Söhbət bağlı ola bilər.");}finally{b.disabled=false;}};
+ if(session?.id&&session?.token)resume();
 })();
 </script></body></html>
