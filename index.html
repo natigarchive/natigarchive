@@ -35,21 +35,17 @@
 @media(prefers-reduced-motion:reduce){.owl-watermark,.owl-watermark svg,.owl-watermark svg>g,.owl-watermark>span,.owl-watermark svg circle,.owl-mark{animation:none!important;transition:none!important;stroke-dashoffset:0!important;opacity:1}}
 
 
-/* Realistic Owl — replaces the temporary line-art emblem */
+/* Compact owl emblem — no hero illustration */
 .brand{gap:10px}
-.owl-mark{width:34px;height:34px;object-fit:contain;border-radius:50%;filter:drop-shadow(0 0 5px #c6a87955)}
-.owl-watermark{width:min(43%,510px);right:1%;top:50%;opacity:1;display:block;animation:owl-arrive 1.6s ease-out both}
-.owl-watermark img{display:block;width:100%;height:auto;max-height:590px;object-fit:contain;filter:drop-shadow(0 18px 45px #000b);transform-origin:50% 60%;animation:owl-breathe 8s ease-in-out 1.6s infinite}
-.owl-watermark>span,.owl-watermark svg{display:none}
-@keyframes owl-arrive{from{opacity:0;transform:translate(18px,-48%) scale(.97)}to{opacity:1;transform:translate(0,-50%) scale(1)}}
-@keyframes owl-breathe{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-5px) scale(1.008)}}
-@media(max-width:700px){.owl-watermark{width:64%;right:-12%;top:43%;opacity:.42}.owl-watermark img{max-height:420px}.owl-mark{width:29px;height:29px}}
-@media(prefers-reduced-motion:reduce){.owl-watermark,.owl-watermark img,.owl-mark{animation:none!important;transition:none!important}}
+.owl-mark{width:34px;height:34px;display:block;flex:none;color:#c6a879;filter:drop-shadow(0 0 5px #c6a87935);transition:filter .25s ease,transform .25s ease}
+.brand:hover .owl-mark{filter:drop-shadow(0 0 8px #c6a87990);transform:translateY(-1px)}
+@media(max-width:700px){.owl-mark{width:29px;height:29px}}
+@media(prefers-reduced-motion:reduce){.owl-mark{transition:none}}
 
 </style><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script></head>
 <body>
-<header class="top"><div class="wrap nav"><a class="brand" href="#home"><img class="owl-mark" src="/natig-archive-owl.webp" alt=""><span>NATIG ARCHIVE</span></a><nav class="links" id="navLinks"><a href="#ecosystem">Bölmələr</a><a href="#about" data-i="navAbout">Haqqında</a><a href="#cinema" data-i="navCinema">Kino & Araşdırma</a><a href="#journal" data-i="navJournal">Jurnal</a><a href="#works" data-i="navWorks">Ssenarilər</a><a href="#market">Market</a><a href="#mystery">Detektiv dosyelər</a><a href="#community">İcma</a><a href="#contact" data-i="navContact">Əlaqə</a></nav><div class="lang"><button class="active" data-lang="az">AZ</button><button data-lang="tr">TR</button><button data-lang="en">EN</button><button data-lang="ru">RU</button></div><button class="menu" id="menuBtn" aria-label="Menu">☰</button></div></header>
-<main><section class="hero" id="home"><div class="wrap hero-inner"><div class="owl-watermark" aria-hidden="true"><img src="/natig-archive-owl.webp" alt=""></div><div class="eyebrow" data-i="eyebrow">ŞƏXSİ KREATİV ARXİV</div><h1>NATIG<br>ARCHIVE</h1><div class="role" data-i="role">Rejissor · Ssenarist · Kino tədqiqatçısı</div><p class="intro" data-i="intro">Kino, hekayəçilik və vizual düşüncə ətrafında formalaşan yaradıcı işlər, araşdırmalar və ideyalar arxivi.</p><a class="button" href="#about" data-i="explore">ARXİVƏ BAX</a></div></section>
+<header class="top"><div class="wrap nav"><a class="brand" href="#home"><svg class="owl-mark" viewBox="0 0 48 48" role="img" aria-label="NATIG ARCHIVE owl emblem"><path d="M8 8 19 14 24 11 29 14 40 8 37 29 32 38 24 42 16 38 11 29Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="m8 8 4 15 8-5 4 4 4-4 8 5 4-15M16 25l8 8 8-8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><circle cx="18.5" cy="24" r="2.2" fill="currentColor"/><circle cx="29.5" cy="24" r="2.2" fill="currentColor"/><path d="m22 31 2 3 2-3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg><span>NATIG ARCHIVE</span></a><nav class="links" id="navLinks"><a href="#ecosystem">Bölmələr</a><a href="#about" data-i="navAbout">Haqqında</a><a href="#cinema" data-i="navCinema">Kino & Araşdırma</a><a href="#journal" data-i="navJournal">Jurnal</a><a href="#works" data-i="navWorks">Ssenarilər</a><a href="#market">Market</a><a href="#mystery">Detektiv dosyelər</a><a href="#community">İcma</a><a href="#contact" data-i="navContact">Əlaqə</a></nav><div class="lang"><button class="active" data-lang="az">AZ</button><button data-lang="tr">TR</button><button data-lang="en">EN</button><button data-lang="ru">RU</button></div><button class="menu" id="menuBtn" aria-label="Menu">☰</button></div></header>
+<main><section class="hero" id="home"><div class="wrap hero-inner"><div class="eyebrow" data-i="eyebrow">ŞƏXSİ KREATİV ARXİV</div><h1>NATIG<br>ARCHIVE</h1><div class="role" data-i="role">Rejissor · Ssenarist · Kino tədqiqatçısı</div><p class="intro" data-i="intro">Kino, hekayəçilik və vizual düşüncə ətrafında formalaşan yaradıcı işlər, araşdırmalar və ideyalar arxivi.</p><a class="button" href="#about" data-i="explore">ARXİVƏ BAX</a></div></section>
 <section class="ecosystem" id="ecosystem"><div class="wrap"><div class="eco-top"><div><div class="kicker" data-i="ecoK">THE ECOSYSTEM / 08 DIVISIONS</div><h2 data-i="ecoTitle">Bir arxivdən daha artığı.</h2></div><div class="eco-note" data-i="ecoNote">Kəşf et · Oxu · Araşdır · Yarat</div></div><div class="eco-grid">
 <a class="eco-card" href="#about"><span class="eco-no">01 / ARCHIVE</span><h3 data-i="eco1">Şəxsi arxiv</h3><p data-i="eco1p">Bioqrafiya, portfolio və yaradıcı yol.</p></a>
 <a class="eco-card" href="#cinema"><span class="eco-no">02 / CINEMA</span><h3 data-i="eco2">Kino kitabxanası</h3><p data-i="eco2p">Filmlər, analizlər və kino araşdırmaları.</p></a>
