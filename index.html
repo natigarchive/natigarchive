@@ -166,7 +166,7 @@ document.querySelector(".hero .button").addEventListener("click",e=>{e.preventDe
   const {data,error}=await archiveDb.from("archive_content").select("id,title,category,language,description,content,image_url,created_at").eq("published",true).order("created_at",{ascending:false});
   if(error){console.warn("NATIG ARCHIVE content:",error.message);return;}
   const groups={cinema:[],literature:[],journal:[],works:[],mystery:[]};
-  (data||[]).forEach(x=>{if(x.category==="literature")groups.literature.push(x);else if(x.language===langNow()){if(x.category==="cinema")groups.cinema.push(x);else if(x.category==="journal")groups.journal.push(x);else if(x.category==="mystery")groups.mystery.push(x);else groups.works.push(x);}});
+  (data||[]).forEach(x=>{if(x.category==="literature"&&x.language===langNow())groups.literature.push(x);else if(x.language===langNow()){if(x.category==="cinema")groups.cinema.push(x);else if(x.category==="journal")groups.journal.push(x);else if(x.category==="mystery")groups.mystery.push(x);else groups.works.push(x);}});
   const cinemaRoot=document.querySelector("#cinema .wrap");
   const storiesRoot=document.querySelector("#stories .wrap");
   const journalRoot=document.querySelector("#journal .wrap");
