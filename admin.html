@@ -1,45 +1,92 @@
 <!DOCTYPE html>
 <html lang="az">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NATIG ARCHIVE — Admin</title>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NATIG ARCHIVE — İdarəetmə</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-*{box-sizing:border-box}
-body{margin:0;background:#090909;color:#eee;font-family:Arial,sans-serif;display:grid;place-items:center;min-height:100vh;padding:20px}
-.panel{width:100%;max-width:420px;border:1px solid #333;padding:38px;background:#111}
-h1{font-size:23px;letter-spacing:4px;color:#d2b16d}
-p{color:#999;font-size:13px;line-height:1.6}
-input{width:100%;padding:14px;margin:9px 0;background:#080808;border:1px solid #444;color:white}
-button{width:100%;padding:14px;margin-top:12px;background:#c6a568;color:#111;border:0;cursor:pointer;font-weight:bold}
-#message{font-size:13px;margin-top:15px}
-</style>
-</head>
+:root{--bg:#090909;--panel:#111;--line:#292929;--gold:#c8a96a;--muted:#999}*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:#eee;font:15px Arial,sans-serif}button,input,textarea,select{font:inherit}
+a{color:var(--gold)}.wrap{max-width:1180px;margin:auto;padding:28px 20px}.top{display:flex;justify-content:space-between;align-items:center;gap:16px;border-bottom:1px solid var(--line);padding-bottom:22px;margin-bottom:25px}
+.brand{color:var(--gold);letter-spacing:4px;font-weight:700;font-size:22px}.muted{color:var(--muted);font-size:13px}.card{background:var(--panel);border:1px solid var(--line);padding:22px;margin-bottom:20px;border-radius:8px}
+h1,h2,h3{font-weight:500}h2{font-size:20px;margin:0 0 18px}label{display:block;color:#bbb;font-size:13px;margin:13px 0 7px}
+input,textarea,select{width:100%;background:#080808;color:#eee;border:1px solid #383838;padding:12px;border-radius:4px}textarea{min-height:125px;resize:vertical}
+button{background:var(--gold);color:#111;border:0;padding:12px 16px;font-weight:700;border-radius:4px;cursor:pointer}button.secondary{background:#242424;color:#eee;border:1px solid #444}button.danger{background:#682e2e;color:white}button:disabled{opacity:.5;cursor:wait}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}.tabs button{background:#1d1d1d;color:#ddd}.tabs button.active{background:var(--gold);color:#111}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.row>*{flex:1}.item{border-top:1px solid var(--line);padding:14px 0;display:flex;gap:14px;align-items:center}.thumb{width:68px;height:68px;object-fit:cover;background:#222;border-radius:4px}.item-main{flex:1;min-width:150px}.item-title{font-weight:700;margin-bottom:5px}.item-actions{display:flex;gap:7px}.item-actions button{padding:8px 10px;font-size:12px}
+#app{display:none}.login{max-width:430px;margin:10vh auto}.notice{padding:12px;background:#1b1b1b;border-left:3px solid var(--gold);color:#ccc;margin:12px 0;white-space:pre-wrap}.hidden{display:none!important}.check{display:flex;gap:8px;align-items:center}.check input{width:auto}
+@media(max-width:700px){.grid{grid-template-columns:1fr}.top{align-items:flex-start;flex-direction:column}.item{align-items:flex-start}.item-actions{flex-direction:column}.wrap{padding:18px 12px}}
+</style></head>
 <body>
-<div class="panel">
-<h1>NATIG ARCHIVE</h1>
-<p>ADMINISTRATION ACCESS</p>
-<input id="email" type="email" placeholder="E-mail address" autocomplete="username">
-<input id="password" type="password" placeholder="Password" autocomplete="current-password">
-<button onclick="login()">SIGN IN</button>
-<div id="message"></div>
+<div id="loginView" class="login card">
+<div class="brand">NATIG ARCHIVE</div><p class="muted">ADMINISTRATION ACCESS</p>
+<label>E-mail</label><input id="email" type="email" autocomplete="username" placeholder="E-mail ünvanın">
+<label>Şifrə</label><input id="password" type="password" autocomplete="current-password" placeholder="Şifrə">
+<button id="loginBtn" style="width:100%;margin-top:18px">Daxil ol</button><div id="loginMsg" class="notice hidden"></div>
+</div>
+<div id="app" class="wrap">
+<header class="top"><div><div class="brand">NATIG ARCHIVE</div><div class="muted">MƏRKƏZİ İDARƏETMƏ PANELİ</div></div><div class="row" style="flex:0 1 auto"><span id="userEmail" class="muted"></span><button id="logoutBtn" class="secondary">Çıxış</button></div></header>
+<div class="tabs"><button class="active" data-tab="content">Arxiv məzmunu</button><button data-tab="products">Market məhsulları</button><button data-tab="media">Şəkillər</button></div>
+<div id="status" class="notice hidden"></div>
+<section id="contentTab">
+<div class="card"><h2 id="contentFormTitle">Yeni məzmun əlavə et</h2><form id="contentForm">
+<input type="hidden" id="contentId">
+<div class="grid"><div><label>Başlıq</label><input id="contentTitle" required maxlength="180" placeholder="Məsələn: Yeni hekayə"></div><div><label>Bölmə</label><select id="contentCategory"><option value="cinema">Kino</option><option value="literature">Ədəbiyyat</option><option value="journal">Jurnal</option><option value="creative">Yaradıcı işlər</option><option value="mystery">Mystery Files</option><option value="archive">Arxiv</option></select></div></div>
+<div class="grid"><div><label>Dil</label><select id="contentLanguage"><option value="az">Azərbaycan dili</option><option value="tr">Türkçe</option><option value="en">English</option><option value="ru">Русский</option></select></div><div><label>Şəkil</label><input id="contentImage" type="file" accept="image/jpeg,image/png,image/webp,image/gif"></div></div>
+<label>Qısa təsvir</label><textarea id="contentDescription" style="min-height:75px" placeholder="Məzmun haqqında qısa məlumat"></textarea>
+<label>Əsas mətn</label><textarea id="contentBody" placeholder="Məqalə, hekayə və ya layihə mətni"></textarea>
+<label class="check"><input id="contentPublished" type="checkbox"> Saytda dərc et</label>
+<div class="row"><button type="submit" id="contentSave">Yadda saxla</button><button type="button" class="secondary" id="contentReset">Təmizlə</button></div>
+</form></div><div class="card"><div class="row"><h2 style="margin:0">Məzmun siyahısı</h2><button class="secondary" id="refreshContent" style="flex:0 0 auto">Yenilə</button></div><div id="contentList" class="muted" style="margin-top:12px">Yüklənir...</div></div>
+</section>
+<section id="productsTab" class="hidden">
+<div class="card"><h2 id="productFormTitle">Yeni məhsul əlavə et</h2><form id="productForm"><input type="hidden" id="productId">
+<div class="grid"><div><label>Məhsulun adı</label><input id="productName" required maxlength="180"></div><div><label>Qiymət</label><input id="productPrice" type="number" min="0" step="0.01" required></div></div>
+<div class="grid"><div><label>Kateqoriya</label><input id="productCategory" placeholder="PDF, geyim, aksesuar..."></div><div><label>Stok</label><input id="productStock" type="number" min="0" value="0"></div></div>
+<label>Məhsul şəkli</label><input id="productImage" type="file" accept="image/jpeg,image/png,image/webp,image/gif">
+<label>Təsvir</label><textarea id="productDescription"></textarea><label class="check"><input id="productActive" type="checkbox" checked> Aktiv / satışda</label>
+<div class="row"><button type="submit" id="productSave">Yadda saxla</button><button type="button" class="secondary" id="productReset">Təmizlə</button></div></form></div>
+<div class="card"><div class="row"><h2 style="margin:0">Məhsullar</h2><button class="secondary" id="refreshProducts" style="flex:0 0 auto">Yenilə</button></div><div id="productList" class="muted" style="margin-top:12px">Yüklənir...</div></div>
+</section>
+<section id="mediaTab" class="hidden"><div class="card"><h2>Şəkil kitabxanası</h2><p class="muted">Buradan yüklədiyin şəkillər məqalə və məhsullarda istifadə edilə bilər. JPG, PNG, WEBP və GIF — maksimum 10 MB.</p><input id="standaloneImage" type="file" accept="image/jpeg,image/png,image/webp,image/gif"><button id="uploadStandalone">Şəkli yüklə</button><div id="mediaMsg" class="notice hidden"></div><div id="mediaList" class="row" style="margin-top:18px;flex-wrap:wrap"></div></div></section>
 </div>
 <script>
-const SUPABASE_URL = "https://kmgfziafzuibfhfotyip.supabase.co";
-const SUPABASE_KEY = "sb_publishable_G1seS69IYPVaw-rq3Danuw__mU7C_aw";
-const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-async function login(){
- const email=document.getElementById("email").value.trim();
- const password=document.getElementById("password").value;
- const message=document.getElementById("message");
- if(!email || !password){message.textContent="Please enter your email and password.";return;}
- message.textContent="Signing in...";
- const {error}=await db.auth.signInWithPassword({email,password});
- if(error){message.textContent="Login failed: "+error.message;return;}
- message.textContent="Login successful. Admin authentication is connected.";
+const SUPABASE_URL="https://kmgfziafzuibfhfotyip.supabase.co";
+const SUPABASE_KEY="sb_publishable_G1seS69IYPVaw-rq3Danuw__mU7C_aw";
+const ADMIN_ID="71fa734a-638d-482f-be2f-5cb7e211a7bd";
+const db=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+const $=id=>document.getElementById(id);
+let currentUser=null;
+function showStatus(message,error=false){const el=$("status");el.textContent=message;el.classList.remove("hidden");el.style.borderColor=error?"#b55":"var(--gold)";}
+function clearStatus(){$("status").classList.add("hidden");}
+function safeName(name){return name.normalize("NFKD").replace(/[^a-zA-Z0-9._-]/g,"-").replace(/-+/g,"-").slice(-100);}
+async function uploadImage(file){
+ if(!file)return null;
+ if(!["image/jpeg","image/png","image/webp","image/gif"].includes(file.type))throw new Error("Yalnız JPG, PNG, WEBP və GIF yükləmək olar.");
+ if(file.size>10*1024*1024)throw new Error("Şəkil 10 MB-dan böyük ola bilməz.");
+ const path=Date.now()+"-"+crypto.randomUUID()+"-"+safeName(file.name);
+ const {error}=await db.storage.from("archive-images").upload(path,file,{cacheControl:"3600",upsert:false,contentType:file.type});
+ if(error)throw error;
+ return db.storage.from("archive-images").getPublicUrl(path).data.publicUrl;
 }
-</script>
-</body>
-</html>
+function showView(user){currentUser=user;$("loginView").style.display="none";$("app").style.display="block";$("userEmail").textContent=user.email||"";loadContent();loadProducts();loadMedia();}
+async function checkSession(){const {data:{session}}=await db.auth.getSession();if(session){if(session.user.id!==ADMIN_ID){await db.auth.signOut();$("loginMsg").textContent="Bu hesabın admin icazəsi yoxdur.";$("loginMsg").classList.remove("hidden");return;}showView(session.user);}}
+$("loginBtn").onclick=async()=>{const email=$("email").value.trim(),password=$("password").value;$("loginMsg").classList.remove("hidden");$("loginMsg").textContent="Giriş yoxlanılır...";const {data,error}=await db.auth.signInWithPassword({email,password});if(error){$("loginMsg").textContent="Giriş alınmadı: "+error.message;return;}if(data.user.id!==ADMIN_ID){await db.auth.signOut();$("loginMsg").textContent="Bu hesab admin kimi təsdiqlənməyib.";return;}showView(data.user);};
+$("password").addEventListener("keydown",e=>{if(e.key==="Enter")$("loginBtn").click();});
+$("logoutBtn").onclick=async()=>{await db.auth.signOut();location.reload();};
+db.auth.onAuthStateChange((_event,session)=>{if(session&&session.user.id===ADMIN_ID&&!currentUser)showView(session.user);});
+document.querySelectorAll("[data-tab]").forEach(btn=>btn.onclick=()=>{document.querySelectorAll("[data-tab]").forEach(b=>b.classList.toggle("active",b===btn));["content","products","media"].forEach(t=>$(t+"Tab").classList.toggle("hidden",t!==btn.dataset.tab));clearStatus();});
+function resetContent(){$("contentForm").reset();$("contentId").value="";$("contentFormTitle").textContent="Yeni məzmun əlavə et";$("contentSave").textContent="Yadda saxla";}
+$("contentReset").onclick=resetContent;
+$("contentForm").onsubmit=async e=>{e.preventDefault();try{$("contentSave").disabled=true;let imageUrl=null;const file=$("contentImage").files[0];if(file)imageUrl=await uploadImage(file);const id=$("contentId").value;const row={title:$("contentTitle").value.trim(),category:$("contentCategory").value,language:$("contentLanguage").value,description:$("contentDescription").value,content:$("contentBody").value,published:$("contentPublished").checked};if(imageUrl)row.image_url=imageUrl;const result=id?await db.from("archive_content").update(row).eq("id",id):await db.from("archive_content").insert(row);if(result.error)throw result.error;resetContent();showStatus("Məzmun uğurla yadda saxlanıldı.");await loadContent();}catch(err){showStatus("Xəta: "+err.message,true);}finally{$("contentSave").disabled=false;}};
+async function loadContent(){const box=$("contentList");box.textContent="Yüklənir...";const {data,error}=await db.from("archive_content").select("*").order("created_at",{ascending:false});if(error){box.textContent=error.message;return;}box.innerHTML="";if(!data.length){box.textContent="Hələ məzmun əlavə edilməyib.";return;}data.forEach(item=>{const el=document.createElement("div");el.className="item";if(item.image_url){const im=document.createElement("img");im.className="thumb";im.src=item.image_url;el.append(im);}const main=document.createElement("div");main.className="item-main";const title=document.createElement("div");title.className="item-title";title.textContent=item.title;const meta=document.createElement("div");meta.className="muted";meta.textContent=item.category+" · "+item.language+" · "+(item.published?"Dərc olunub":"Qaralama");main.append(title,meta);const actions=document.createElement("div");actions.className="item-actions";const edit=document.createElement("button");edit.className="secondary";edit.textContent="Redaktə";edit.onclick=()=>{ $("contentId").value=item.id;$("contentTitle").value=item.title;$("contentCategory").value=item.category;$("contentLanguage").value=item.language;$("contentDescription").value=item.description||"";$("contentBody").value=item.content||"";$("contentPublished").checked=item.published;$("contentFormTitle").textContent="Məzmunu redaktə et";$("contentSave").textContent="Dəyişiklikləri saxla";window.scrollTo({top:0,behavior:"smooth"});};const del=document.createElement("button");del.className="danger";del.textContent="Sil";del.onclick=async()=>{if(!confirm("Bu məzmun silinsin?"))return;const {error}=await db.from("archive_content").delete().eq("id",item.id);if(error)showStatus(error.message,true);else{showStatus("Məzmun silindi.");loadContent();}};actions.append(edit,del);el.append(main,actions);box.append(el);});}
+$("refreshContent").onclick=loadContent;
+function resetProduct(){$("productForm").reset();$("productId").value="";$("productActive").checked=true;$("productStock").value=0;$("productFormTitle").textContent="Yeni məhsul əlavə et";$("productSave").textContent="Yadda saxla";}
+$("productReset").onclick=resetProduct;
+$("productForm").onsubmit=async e=>{e.preventDefault();try{$("productSave").disabled=true;let imageUrl=null;const file=$("productImage").files[0];if(file)imageUrl=await uploadImage(file);const id=$("productId").value;const row={name:$("productName").value.trim(),price:Number($("productPrice").value),category:$("productCategory").value,stock:Number($("productStock").value||0),description:$("productDescription").value,active:$("productActive").checked};if(imageUrl)row.image_url=imageUrl;const result=id?await db.from("market_products").update(row).eq("id",id):await db.from("market_products").insert(row);if(result.error)throw result.error;resetProduct();showStatus("Məhsul yadda saxlanıldı.");await loadProducts();}catch(err){showStatus("Xəta: "+err.message,true);}finally{$("productSave").disabled=false;}};
+async function loadProducts(){const box=$("productList");box.textContent="Yüklənir...";const {data,error}=await db.from("market_products").select("*").order("created_at",{ascending:false});if(error){box.textContent=error.message;return;}box.innerHTML="";if(!data.length){box.textContent="Hələ məhsul əlavə edilməyib.";return;}data.forEach(item=>{const el=document.createElement("div");el.className="item";if(item.image_url){const im=document.createElement("img");im.className="thumb";im.src=item.image_url;el.append(im);}const main=document.createElement("div");main.className="item-main";const title=document.createElement("div");title.className="item-title";title.textContent=item.name;const meta=document.createElement("div");meta.className="muted";meta.textContent=Number(item.price).toFixed(2)+" · "+(item.active?"Aktiv":"Deaktiv")+" · Stok: "+item.stock;main.append(title,meta);const actions=document.createElement("div");actions.className="item-actions";const edit=document.createElement("button");edit.className="secondary";edit.textContent="Redaktə";edit.onclick=()=>{$("productId").value=item.id;$("productName").value=item.name;$("productPrice").value=item.price;$("productCategory").value=item.category||"";$("productStock").value=item.stock||0;$("productDescription").value=item.description||"";$("productActive").checked=item.active;$("productFormTitle").textContent="Məhsulu redaktə et";$("productSave").textContent="Dəyişiklikləri saxla";window.scrollTo({top:0,behavior:"smooth"});};const del=document.createElement("button");del.className="danger";del.textContent="Sil";del.onclick=async()=>{if(!confirm("Bu məhsul silinsin?"))return;const {error}=await db.from("market_products").delete().eq("id",item.id);if(error)showStatus(error.message,true);else{showStatus("Məhsul silindi.");loadProducts();}};actions.append(edit,del);el.append(main,actions);box.append(el);});}
+$("refreshProducts").onclick=loadProducts;
+$("uploadStandalone").onclick=async()=>{const f=$("standaloneImage").files[0],msg=$("mediaMsg");msg.classList.remove("hidden");if(!f){msg.textContent="Əvvəlcə şəkil seç.";return;}try{msg.textContent="Yüklənir...";const url=await uploadImage(f);msg.textContent="Yükləndi: "+url;await loadMedia();}catch(e){msg.textContent="Xəta: "+e.message;}};
+async function loadMedia(){const box=$("mediaList");if(!box)return;box.innerHTML="";const {data,error}=await db.storage.from("archive-images").list("",{limit:100,sortBy:{column:"created_at",order:"desc"}});if(error){box.textContent=error.message;return;}if(!data.length){box.textContent="Hələ şəkil yoxdur.";return;}data.forEach(file=>{if(!file.name)return;const url=db.storage.from("archive-images").getPublicUrl(file.name).data.publicUrl;const wrap=document.createElement("div");wrap.style.cssText="width:140px;background:#191919;padding:8px;border:1px solid #333";const img=document.createElement("img");img.src=url;img.style.cssText="width:100%;height:95px;object-fit:cover";const name=document.createElement("div");name.className="muted";name.style.cssText="overflow-wrap:anywhere;margin:6px 0";name.textContent=file.name.slice(0,34);const copy=document.createElement("button");copy.className="secondary";copy.textContent="URL-ni köçür";copy.style.width="100%";copy.onclick=()=>navigator.clipboard.writeText(url).then(()=>showStatus("Şəkil linki köçürüldü."));wrap.append(img,name,copy);box.append(wrap);});}
+checkSession();
+</script></body></html>
