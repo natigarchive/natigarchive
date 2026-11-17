@@ -128,7 +128,26 @@ async function loadOrders(){
    const paid=document.createElement("button");paid.textContent="Ödənişi təsdiqlə";paid.onclick=()=>setOrderStatus(o.id,"paid");actions.append(paid);
    const reject=document.createElement("button");reject.className="danger";reject.textContent="Rədd et";reject.onclick=()=>setOrderStatus(o.id,"rejected");actions.append(reject);
   } else if(o.status==="paid"){
-   const delivered=document.createElement("button");delivered.className="secondary";delivered.textContent="PDF-i göndərmə mərhələsi";delivered.disabled=true;actions.append(delivered);
+   const send=document.createElement("button");send.textContent="PDF-i göndər";send.disabled=!p.pdf_path;
+   if(!p.pdf_path)send.title="Bu məhsula PDF əlavə edilməyib.";
+   send.onclick=async()=>{
+    if(!confirm(o.customer_email+" ünvanına PDF göndərilsin?"))return;
+    send.disabled=true;send.textContent="Göndərilir...";
+    try{
+     const {data:{session},error:sessionError}=await db.auth.getSession();
+     if(sessionError||!session?.access_token)throw new Error("Admin sessiyası tapılmadı. Yenidən daxil ol.");
+     const response=await fetch(SUPABASE_URL+"/functions/v1/deliver-market-order",{
+      method:"POST",
+      headers:{"Content-Type":"application/json","Authorization":"Bearer "+session.access_token,"apikey":SUPABASE_KEY},
+      body:JSON.stringify({order_id:o.id})
+     });
+     const result=await response.json().catch(()=>({}));
+     if(!response.ok)throw new Error(result.error||"PDF göndərilmədi.");
+     showStatus("PDF Resend-ə göndərildi: "+o.customer_email);
+     await loadOrders();
+    }catch(err){showStatus("Göndərmə xətası: "+err.message,true);send.disabled=false;send.textContent="PDF-i yenidən göndər";}
+   };
+   actions.append(send);
    if(p.pdf_path){const view=document.createElement("button");view.className="secondary";view.textContent="PDF-i yoxla";view.onclick=async()=>{const {data,error}=await db.storage.from("market-pdfs").createSignedUrl(p.pdf_path,90);if(error)showStatus(error.message,true);else window.open(data.signedUrl,"_blank","noopener");};actions.append(view);}
   }
   card.append(main,actions);box.append(card);
