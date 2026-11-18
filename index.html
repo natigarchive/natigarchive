@@ -123,6 +123,22 @@
  #storyReader .reader-title{font-size:36px}
  #storyReader .reader-text{font-size:16px;line-height:1.85}
 }
+
+/* Photo-only literature gallery */
+#cmsStories.magazine-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:34px 24px;max-width:100%;margin:0}
+#cmsStories .compact-story{display:flex;flex-direction:column;align-items:stretch;gap:0;padding:0;border:0;background:transparent;cursor:pointer;min-width:0}
+#cmsStories .compact-story-cover{display:block;width:100%;height:auto;aspect-ratio:3/4;object-fit:cover;margin:0;background:#17130f;opacity:1;filter:none;transition:opacity .25s ease,transform .35s ease}
+#cmsStories .compact-story-copy{display:flex;flex-direction:column;align-items:flex-start;gap:0;padding:13px 0 0;min-width:0}
+#cmsStories .compact-story .magazine-label,
+#cmsStories .compact-story h3,
+#cmsStories .compact-story p{display:none}
+#cmsStories .compact-story .magazine-read{display:inline-block;margin:0;padding:3px 0 5px;background:transparent;border:0;border-bottom:1px solid #766347;color:#c6a879;font-size:9px;letter-spacing:1.8px;white-space:nowrap;cursor:pointer}
+#cmsStories .compact-story .magazine-read:hover{background:transparent;color:#eeeae2;border-color:#eeeae2}
+#cmsStories .compact-story:hover{transform:none;border:0}
+#cmsStories .compact-story:hover .compact-story-cover{opacity:.82;transform:translateY(-3px)}
+@media(min-width:1000px){#cmsStories.magazine-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:38px 26px}}
+@media(max-width:700px){#cmsStories.magazine-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:25px 15px}}
+@media(max-width:380px){#cmsStories.magazine-grid{gap:20px 11px}#cmsStories .compact-story .magazine-read{font-size:8px;letter-spacing:1.3px}}
 </style><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script></head>
 <body>
 <header class="top"><div class="wrap nav"><a class="brand" href="#home"><svg class="owl-mark" viewBox="0 0 48 48" role="img" aria-label="NATIG ARCHIVE owl emblem"><path d="M8 8 19 14 24 11 29 14 40 8 37 29 32 38 24 42 16 38 11 29Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="m8 8 4 15 8-5 4 4 4-4 8 5 4-15M16 25l8 8 8-8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><circle cx="18.5" cy="24" r="2.2" fill="currentColor"/><circle cx="29.5" cy="24" r="2.2" fill="currentColor"/><path d="m22 31 2 3 2-3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg><span>NATIG ARCHIVE</span></a><nav class="links" id="navLinks"><a href="#ecosystem" data-i="navSections">Bölmələr</a><a href="#about" data-i="navAbout">Haqqında</a><a href="#cinema" data-i="navCinema">Kino & Araşdırma</a><a href="#stories" data-i="navStories">Hekayələr</a><a href="journal.html" data-i="navJournal">Jurnal</a><a href="#works" data-i="navWorks">Ssenarilər</a><a href="#market" data-i="navMarket">Market</a><a href="#mystery" data-i="navMystery">Detektiv dosyelər</a><a href="xatire-divari.html" data-i="navMemory">Xatirə Divarı</a><a href="#contact" data-i="navContact">Əlaqə</a></nav><div class="lang"><button class="active" data-lang="az">AZ</button><button data-lang="tr">TR</button><button data-lang="en">EN</button><button data-lang="ru">RU</button></div><button class="menu" id="menuBtn" aria-label="Menu">☰</button></div></header>
