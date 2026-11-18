@@ -89,6 +89,41 @@
 #cmsStories .compact-story:hover{transform:none;border-color:#8e7858}
 @media(max-width:600px){#cmsStories .compact-story{gap:13px;padding:13px 0}#cmsStories .compact-story-cover{width:112px;height:145px}#cmsStories .compact-story-copy{grid-template-columns:1fr;gap:5px}#cmsStories .compact-story .magazine-label{grid-column:1}#cmsStories .compact-story h3{font-size:18px}#cmsStories .compact-story p{font-size:11px}#cmsStories .compact-story .magazine-read{grid-column:1;grid-row:auto;justify-self:start;margin-top:5px;padding:8px 11px;font-size:9px}}
 
+
+/* Complete daylight palette for every inner section */
+body[data-theme="light"] .section,
+body[data-theme="light"] .ecosystem{background-color:#f3f0e9!important;color:#292720}
+body[data-theme="light"] .section h1,
+body[data-theme="light"] .section h2,
+body[data-theme="light"] .section h3,
+body[data-theme="light"] .section h4,
+body[data-theme="light"] .ecosystem h1,
+body[data-theme="light"] .ecosystem h2,
+body[data-theme="light"] .ecosystem h3{color:#292720}
+body[data-theme="light"] .section p,
+body[data-theme="light"] .section li,
+body[data-theme="light"] .section .description,
+body[data-theme="light"] .ecosystem p{color:#625d53}
+body[data-theme="light"] .section article,
+body[data-theme="light"] .section .card,
+body[data-theme="light"] .section .eco-card,
+body[data-theme="light"] .section .magazine-card,
+body[data-theme="light"] .section .journal article{background-color:#fffdf8;border-color:#d8d1c4}
+body[data-theme="light"] .section .section-head,
+body[data-theme="light"] .section .section-head p{color:#625d53}
+body[data-theme="light"] .section .num,
+body[data-theme="light"] .section .kicker,
+body[data-theme="light"] .section .eyebrow,
+body[data-theme="light"] .section .magazine-label,
+body[data-theme="light"] .section .journal time{color:#8a6838}
+body[data-theme="light"] .section a{color:#76572d}
+body[data-theme="light"] .section a:hover{color:#4f3a1d}
+body[data-theme="light"] .section input,
+body[data-theme="light"] .section textarea,
+body[data-theme="light"] .section select{background:#fffdf8;color:#292720;border-color:#d8d1c4}
+body[data-theme="light"] .section button:not(.magazine-read){color:#4d493f;border-color:#c9bfad}
+body[data-theme="light"] .section button.active{color:#76572d;border-color:#8a6838}
+
 /* NATIG ARCHIVE day/night theme */
 .theme-toggle{display:grid;place-items:center;width:34px;height:34px;padding:0;border:1px solid var(--line);background:transparent;color:var(--gold);font-size:18px;line-height:1;cursor:pointer;flex:none;transition:.2s}
 .theme-toggle:hover{border-color:var(--gold);transform:rotate(12deg)}
