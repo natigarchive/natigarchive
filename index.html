@@ -164,10 +164,14 @@ document.querySelectorAll('[data-lang]').forEach(b=>b.addEventListener('click',(
 setLang(localStorage.getItem("na-main-lang")||"az");
 document.querySelectorAll('[data-filter]').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('[data-filter]').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.querySelectorAll('.product').forEach(p=>p.classList.toggle('hidden',b.dataset.filter!=='all'&&p.dataset.category!==b.dataset.filter));}));
 const menuBtn=document.getElementById("menuBtn"),navLinks=document.getElementById("navLinks");menuBtn.textContent="MENU";menuBtn.setAttribute("aria-expanded","false");menuBtn.addEventListener("click",()=>{const opened=navLinks.classList.toggle("open");menuBtn.setAttribute("aria-expanded",String(opened));});
-function showView(view){document.body.dataset.view=view;document.querySelector(".hero").hidden=view!=="home";navLinks.classList.remove("open");menuBtn.setAttribute("aria-expanded","false");window.scrollTo({top:0,behavior:"smooth"});}
+function showView(view,updateRoute=true){document.body.dataset.view=view;document.querySelector(".hero").hidden=view!=="home";navLinks.classList.remove("open");menuBtn.setAttribute("aria-expanded","false");if(updateRoute){const next="#"+view;if(location.hash!==next)history.pushState({view},"",next);}window.scrollTo({top:0,behavior:"smooth"});}
+function restoreRoute(){const route=(location.hash||"#home").slice(1);if(route.startsWith("story-")){showView("stories",false);if(window.naOpenStoryById)window.naOpenStoryById(route.slice(6),false);return;}const allowed=["home","ecosystem","about","cinema","stories","journal","works","market","mystery","community","contact"];showView(allowed.includes(route)?route:"home",false);}
 document.querySelectorAll("#navLinks a").forEach(a=>a.addEventListener("click",e=>{const href=a.getAttribute("href")||"";if(href.startsWith("#")){e.preventDefault();showView(href.slice(1));}}));
 document.querySelector(".brand").addEventListener("click",e=>{e.preventDefault();showView("home");});
 document.querySelector(".hero .button").addEventListener("click",e=>{e.preventDefault();showView("ecosystem");});
+window.addEventListener("popstate",restoreRoute);
+window.addEventListener("hashchange",restoreRoute);
+restoreRoute();
 
 /* Live content from NATIG ARCHIVE CMS */
 (()=>{
@@ -189,8 +193,9 @@ document.querySelector(".hero .button").addEventListener("click",e=>{e.preventDe
   renderCards(groups.cinema,"cmsCinema",cinemaRoot);
   renderCards(groups.works,"cmsWorks",worksRoot);
   renderCards(groups.mystery,"cmsMystery",mysteryRoot);
-  const openStory=(x)=>{const overlay=document.getElementById("storyReader"),body=document.getElementById("readerBody");body.innerHTML="";body.append(make("h1","reader-title",x.title));body.append(make("div","reader-byline","NATİQ MİSİRZADƏ  /  "+(x.category||"LITERATURE").toUpperCase()));if(x.description)body.append(make("p","reader-description",x.description));const content=make("div","reader-text",x.content||"");body.append(content);overlay.classList.add("open");overlay.setAttribute("aria-hidden","false");document.body.style.overflow="hidden";};
-  const closeStory=()=>{const overlay=document.getElementById("storyReader");overlay.classList.remove("open");overlay.setAttribute("aria-hidden","true");document.body.style.overflow="";};
+  const openStory=(x,updateRoute=true)=>{const overlay=document.getElementById("storyReader"),body=document.getElementById("readerBody");body.innerHTML="";body.append(make("h1","reader-title",x.title));body.append(make("div","reader-byline","NATİQ MİSİRZADƏ  /  "+(x.category||"LITERATURE").toUpperCase()));if(x.description)body.append(make("p","reader-description",x.description));const content=make("div","reader-text",x.content||"");body.append(content);overlay.classList.add("open");overlay.setAttribute("aria-hidden","false");document.body.style.overflow="hidden";if(updateRoute&&x.id){showView(x.category==="literature"?"stories":x.category);const next="#story-"+x.id;if(location.hash!==next)history.pushState({storyId:x.id},"",next);}};
+  const closeStory=(updateRoute=true)=>{const overlay=document.getElementById("storyReader");overlay.classList.remove("open");overlay.setAttribute("aria-hidden","true");document.body.style.overflow="";if(updateRoute&&location.hash.startsWith("#story-")){history.pushState({view:"stories"},"","#stories");showView("stories",false);}};
+  window.naOpenStoryById=(id,updateRoute=false)=>{const found=(data||[]).find(x=>String(x.id)===String(id));if(found){showView(found.category==="literature"?"stories":found.category,false);openStory(found,updateRoute);}};
   document.getElementById("readerClose").onclick=closeStory;
   document.getElementById("storyReader").onclick=e=>{if(e.target.id==="storyReader")closeStory();};
   document.addEventListener("keydown",e=>{if(e.key==="Escape")closeStory();});
@@ -201,6 +206,7 @@ document.querySelector(".hero .button").addEventListener("click",e=>{e.preventDe
   const jroot=document.getElementById("cmsJournal");jroot.innerHTML="";
   groups.journal.forEach(x=>{const card=make("article","magazine-card");card.append(make("div","magazine-label","JURNAL  /  NATIG ARCHIVE"));card.append(make("h3","",x.title));if(x.description)card.append(make("p","",x.description));card.onclick=()=>openStory(x);jroot.append(card);});
   if(!groups.journal.length)jroot.append(make("p","magazine-empty",langNow()==="tr"?"Henüz yayımlanmış yazı yok.":langNow()==="en"?"No journal entries published yet.":langNow()==="ru"?"Пока нет опубликованных материалов.":"Jurnalda hələlik yayımlanmış yazı yoxdur."));
+  if(location.hash.startsWith("#story-")){const id=location.hash.slice(7);const found=(data||[]).find(x=>String(x.id)===String(id));if(found){showView(found.category==="literature"?"stories":found.category,false);openStory(found,false);}}
 
  }
  function ensureCheckout(){
