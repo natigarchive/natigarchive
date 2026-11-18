@@ -88,9 +88,53 @@
 #cmsStories .compact-story .magazine-read{grid-column:2;grid-row:2/4;align-self:center;margin:0;padding:10px 14px;white-space:nowrap}
 #cmsStories .compact-story:hover{transform:none;border-color:#8e7858}
 @media(max-width:600px){#cmsStories .compact-story{gap:13px;padding:13px 0}#cmsStories .compact-story-cover{width:112px;height:145px}#cmsStories .compact-story-copy{grid-template-columns:1fr;gap:5px}#cmsStories .compact-story .magazine-label{grid-column:1}#cmsStories .compact-story h3{font-size:18px}#cmsStories .compact-story p{font-size:11px}#cmsStories .compact-story .magazine-read{grid-column:1;grid-row:auto;justify-self:start;margin-top:5px;padding:8px 11px;font-size:9px}}
+
+/* NATIG ARCHIVE day/night theme */
+.theme-toggle{display:grid;place-items:center;width:34px;height:34px;padding:0;border:1px solid var(--line);background:transparent;color:var(--gold);font-size:18px;line-height:1;cursor:pointer;flex:none;transition:.2s}
+.theme-toggle:hover{border-color:var(--gold);transform:rotate(12deg)}
+body[data-theme="light"]{--bg:#f3f0e9;--panel:#fffdf8;--text:#292720;--muted:#777166;--gold:#8a6838;--line:#d8d1c4;background:var(--bg);color:var(--text)}
+body[data-theme="light"] .top{background:rgba(243,240,233,.94);border-color:var(--line)}
+body[data-theme="light"] .links{background:#fffdf8;border-color:#d8d1c4;box-shadow:0 18px 50px #51473522}
+body[data-theme="light"] .links a,body[data-theme="light"] .lang button{color:#5c574d}
+body[data-theme="light"] .hero{background:radial-gradient(ellipse at 78% 42%,rgba(190,158,105,.22),transparent 52%),linear-gradient(115deg,#f6f3ec,#e9e3d7 48%,#f3f0e9);border-color:var(--line)}
+body[data-theme="light"] .hero:before{opacity:.12;background:repeating-linear-gradient(0deg,transparent 0 3px,rgba(40,35,25,.035) 4px,transparent 5px)}
+body[data-theme="light"] .hero:after{border-color:rgba(138,104,56,.18);box-shadow:0 0 0 45px rgba(138,104,56,.025),0 0 0 90px rgba(138,104,56,.018)}
+body[data-theme="light"] .intro,body[data-theme="light"] .about-grid p,body[data-theme="light"] .bio-copy p{color:#625d53}
+body[data-theme="light"] .button{color:#39352e;border-color:#9b8058}
+body[data-theme="light"] .button:hover{background:#8a6838;color:#fff}
+body[data-theme="light"] .ecosystem{background:linear-gradient(180deg,#eee9df,#f3f0e9);border-color:var(--line)}
+body[data-theme="light"] .eco-card,body[data-theme="light"] .card{background:linear-gradient(145deg,#fffdf8,#eee9df);border-color:#d8d1c4}
+body[data-theme="light"] .eco-card p,body[data-theme="light"] .card p,body[data-theme="light"] .journal p{color:#777166}
+body[data-theme="light"] .magazine-feature{background:#fffdf8;border-color:#d8d1c4}
+body[data-theme="light"] .magazine-copy p,body[data-theme="light"] .magazine-card p{color:#625d53}
+body[data-theme="light"] .magazine-card{border-color:#c9bfad}
+body[data-theme="light"] .magazine-read{color:#39352e;border-color:#9b8058}
+body[data-theme="light"] .magazine-read:hover{background:#8a6838;color:#fff}
+body[data-theme="light"] .magazine-empty{color:#625d53;border-color:#d8d1c4}
+body[data-theme="light"] .compact-story-cover{background:#e5dfd3}
+body[data-theme="light"] .filters button{color:#625d53;border-color:#d8d1c4}
+body[data-theme="light"] .filters button.active,body[data-theme="light"] .filters button:hover{color:#8a6838;border-color:#8a6838}
+body[data-theme="light"] .product{background:#fffdf8;border-color:#d8d1c4}
+body[data-theme="light"] .product-art{background:linear-gradient(135deg,#e6dfd2,#f5f1e9);color:#8a6838}
+body[data-theme="light"] .product-info p,body[data-theme="light"] .market-intro,body[data-theme="light"] .contact p{color:#777166}
+body[data-theme="light"] .social-link{color:#4d493f;border-color:#d8d1c4}
+body[data-theme="light"] .social-mark{border-color:#9b8058;color:#8a6838}
+body[data-theme="light"] .footer-social a{color:#625d53}
+body[data-theme="light"] footer,body[data-theme="light"] .copyright-note{color:#777166}
+body[data-theme="light"] .memory-banner{background:#e9e3d7;border-color:#d8d1c4}
+body[data-theme="light"] .memory-banner-copy p{color:#625d53}
+body[data-theme="light"] .memory-banner-link{color:#39352e}
+body[data-theme="light"] .chat-panel{background:#fffdf8;color:#292720;border-color:#d8d1c4}
+body[data-theme="light"] .chat-bubble.visitor{background:#eee9df;color:#292720}
+body[data-theme="light"] .chat-form input,body[data-theme="light"] .chat-start input,body[data-theme="light"] .chat-start textarea{background:#f3f0e9;color:#292720;border-color:#d8d1c4}
+body[data-theme="light"] .na-checkout-box{background:#fffdf8;color:#292720;border-color:#bba782}
+body[data-theme="light"] .na-checkout-box p{color:#625d53}
+body[data-theme="light"] .na-checkout-box input,body[data-theme="light"] .na-checkout-box select{background:#f3f0e9;color:#292720;border-color:#d8d1c4}
+body[data-theme="light"] .na-checkout-actions button.secondary{color:#292720}
+@media(max-width:520px){.theme-toggle{width:32px;height:32px}}
 </style><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script></head>
 <body>
-<header class="top"><div class="wrap nav"><a class="brand" href="#home"><svg class="owl-mark" viewBox="0 0 48 48" role="img" aria-label="NATIG ARCHIVE owl emblem"><path d="M8 8 19 14 24 11 29 14 40 8 37 29 32 38 24 42 16 38 11 29Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="m8 8 4 15 8-5 4 4 4-4 8 5 4-15M16 25l8 8 8-8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><circle cx="18.5" cy="24" r="2.2" fill="currentColor"/><circle cx="29.5" cy="24" r="2.2" fill="currentColor"/><path d="m22 31 2 3 2-3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg><span>NATIG ARCHIVE</span></a><nav class="links" id="navLinks"><a href="#ecosystem" data-i="navSections">Bölmələr</a><a href="#about" data-i="navAbout">Haqqında</a><a href="#cinema" data-i="navCinema">Kino & Araşdırma</a><a href="#stories" data-i="navStories">Hekayələr</a><a href="journal.html" data-i="navJournal">Jurnal</a><a href="#works" data-i="navWorks">Ssenarilər</a><a href="#market" data-i="navMarket">Market</a><a href="#mystery" data-i="navMystery">Detektiv dosyelər</a><a href="xatire-divari.html" data-i="navMemory">Xatirə Divarı</a><a href="#contact" data-i="navContact">Əlaqə</a></nav><div class="lang"><button class="active" data-lang="az">AZ</button><button data-lang="tr">TR</button><button data-lang="en">EN</button><button data-lang="ru">RU</button></div><button class="menu" id="menuBtn" aria-label="Menu">☰</button></div></header>
+<header class="top"><div class="wrap nav"><a class="brand" href="#home"><svg class="owl-mark" viewBox="0 0 48 48" role="img" aria-label="NATIG ARCHIVE owl emblem"><path d="M8 8 19 14 24 11 29 14 40 8 37 29 32 38 24 42 16 38 11 29Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="m8 8 4 15 8-5 4 4 4-4 8 5 4-15M16 25l8 8 8-8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><circle cx="18.5" cy="24" r="2.2" fill="currentColor"/><circle cx="29.5" cy="24" r="2.2" fill="currentColor"/><path d="m22 31 2 3 2-3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg><span>NATIG ARCHIVE</span></a><nav class="links" id="navLinks"><a href="#ecosystem" data-i="navSections">Bölmələr</a><a href="#about" data-i="navAbout">Haqqında</a><a href="#cinema" data-i="navCinema">Kino & Araşdırma</a><a href="#stories" data-i="navStories">Hekayələr</a><a href="journal.html" data-i="navJournal">Jurnal</a><a href="#works" data-i="navWorks">Ssenarilər</a><a href="#market" data-i="navMarket">Market</a><a href="#mystery" data-i="navMystery">Detektiv dosyelər</a><a href="xatire-divari.html" data-i="navMemory">Xatirə Divarı</a><a href="#contact" data-i="navContact">Əlaqə</a></nav><button class="theme-toggle" id="themeToggle" type="button" aria-label="Gündüz rejiminə keç" title="Gündüz rejimi">☼</button><div class="lang"><button class="active" data-lang="az">AZ</button><button data-lang="tr">TR</button><button data-lang="en">EN</button><button data-lang="ru">RU</button></div><button class="menu" id="menuBtn" aria-label="Menu">☰</button></div></header>
 <section class="memory-banner" aria-label="Xatirə Divarı"><div class="wrap memory-banner-inner"><div class="memory-seal" aria-hidden="true">✦</div><div class="memory-banner-copy"><div class="memory-banner-kicker" data-i="memoryKicker">NATIG ARCHIVE · AÇIQ XATİRƏ ARXİVİ</div><h2 data-i="memoryTitle">Bir iz burax. Bir xatirə yaşat.</h2><p data-i="memoryDesc">Sözlərin burada zamanın içində qalacaq. Sən də öz izini arxivə əlavə et.</p></div><a class="memory-banner-link" href="xatire-divari.html" data-i="memoryButton">XATİRƏ DİVARINA KEÇ <span>↗</span></a></div></section>
 <main><section class="hero" id="home"><div class="wrap hero-inner"><div class="eyebrow" data-i="eyebrow">ŞƏXSİ KREATİV ARXİV</div><h1>NATIG<br>ARCHIVE</h1><div class="role" data-i="role">Rejissor · Ssenarist · Kino tədqiqatçısı</div><p class="intro" data-i="intro">Kino, hekayəçilik və vizual düşüncə ətrafında formalaşan yaradıcı işlər, araşdırmalar və ideyalar arxivi.</p><a class="button" href="#about" data-i="explore">ARXİVƏ BAX</a></div></section>
 <section class="ecosystem" id="ecosystem"><div class="wrap"><div class="eco-top"><div><div class="kicker" data-i="ecoK">THE ECOSYSTEM / 08 DIVISIONS</div><h2 data-i="ecoTitle">Bir arxivdən daha artığı.</h2></div><div class="eco-note" data-i="ecoNote">Kəşf et · Oxu · Araşdır · Yarat</div></div><div class="eco-grid">
@@ -331,4 +375,8 @@ restoreRoute();
  form.onsubmit=async e=>{e.preventDefault();const input=$("naChatMessage"),message=input.value.trim();if(!message||!session)return;const b=form.querySelector("button");b.disabled=true;try{const {data,error}=await db.rpc("chat_visitor_send",{p_conversation_id:session.id,p_token:session.token,p_message:message});if(error||!data)throw error||new Error("Söhbət bağlıdır");input.value="";await refresh();}catch(_){alert((chatText[document.documentElement.lang]||chatText.az).failedReply);}finally{b.disabled=false;}};
  if(session?.id&&session?.token)resume();
 })();
-</script></body></html>
+</script>
+<script>
+(()=>{const key="na_site_theme_v1",btn=document.getElementById("themeToggle"),meta=document.querySelector('meta[name="theme-color"]');if(!btn)return;let saved="dark";try{saved=localStorage.getItem(key)||"dark"}catch(_){}function apply(mode){const light=mode==="light";document.body.dataset.theme=light?"light":"dark";btn.textContent=light?"☾":"☼";btn.setAttribute("aria-label",light?"Gecə rejiminə keç":"Gündüz rejiminə keç");btn.title=light?"Gecə rejimi":"Gündüz rejimi";if(meta)meta.setAttribute("content",light?"#f3f0e9":"#090909");}apply(saved);btn.addEventListener("click",()=>{const next=document.body.dataset.theme==="light"?"dark":"light";apply(next);try{localStorage.setItem(key,next)}catch(_){}});})();
+</script>
+</body></html>
