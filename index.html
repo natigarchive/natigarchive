@@ -372,6 +372,24 @@ restoreRoute();
       cinemaCards.prepend(card);
     }
   }
+  if(!groups.cinema.some(x=>/Sinemada Avangart Akımlar|Schindler'in Listesi/i.test(x.title||""))){
+    const cinemaCards=document.getElementById("cmsCinema");
+    if(cinemaCards){
+      const card=make("article","card");
+      card.tabIndex=0;
+      card.setAttribute("role","link");
+      card.setAttribute("aria-label","Sinemada Avangart Akımlar Schindler'in Listesi makalesini oku");
+      card.style.cursor="pointer";
+      const openSchindlersList=()=>{window.location.href="/cinema/schindlers-list-ahlak-kahramanlik/";};
+      card.addEventListener("click",openSchindlersList);
+      card.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();openSchindlersList();}});
+      card.append(make("small","","CINEMA"));
+      card.append(make("h3","","SİNEMADA AVANGART AKIMLAR"));
+      card.append(make("p","","Geçmişten Dersler ve Gelecekteki Zulümleri Önleme: Schindler'in Listesi'nde Ahlak, Kahramanlık ve Kavramsal Anlam"));
+      card.append(make("span","card-read-more","MAKALENİ OXU →"));
+      cinemaCards.prepend(card);
+    }
+  }
   renderCards(groups.works,"cmsWorks",worksRoot);
   renderCards(groups.mystery,"cmsMystery",mysteryRoot);
   const openStory=(x,updateRoute=true)=>{const overlay=document.getElementById("storyReader"),body=document.getElementById("readerBody");body.innerHTML="";body.append(make("h1","reader-title",x.title));body.append(make("div","reader-byline","NATİQ MİSİRZADƏ  /  "+(x.category||"LITERATURE").toUpperCase()));if(x.description)body.append(make("p","reader-description",x.description));const content=make("div","reader-text",x.content||"");body.append(content);overlay.classList.add("open");overlay.setAttribute("aria-hidden","false");document.body.style.overflow="hidden";if(updateRoute&&x.id){showView(x.category==="literature"?"stories":x.category);const next="#story-"+x.id;if(location.hash!==next)history.pushState({storyId:x.id},"",next);}};
