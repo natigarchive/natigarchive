@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://natigarchive.com/</loc><changefreq>weekly</changefreq><priority>1.0</priority></url>
-  <url><loc>https://natigarchive.com/stories/</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://natigarchive.com/cinema/</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://natigarchive.com/stories/</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://natigarchive.com/cinema/</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://natigarchive.com/cinema/squid-game/</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
   <url><loc>https://natigarchive.com/journal/</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://natigarchive.com/works/</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://natigarchive.com/mystery/</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://natigarchive.com/about/</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://natigarchive.com/journal.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://natigarchive.com/works/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://natigarchive.com/mystery/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://natigarchive.com/about/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://natigarchive.com/xatire-divari/</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>
   <url><loc>https://natigarchive.com/stories/icimdeki-yad/az/</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://natigarchive.com/stories/icimdeki-yad/tr/</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://natigarchive.com/stories/icimdeki-yad/en/</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
