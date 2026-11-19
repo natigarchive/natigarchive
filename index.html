@@ -300,6 +300,24 @@ restoreRoute();
   const mysteryRoot=document.querySelector("#mystery .wrap");
   const renderCards=(items,targetId,parent)=>{const root=ensure(targetId,parent,"cards cms-cards");root.innerHTML="";items.forEach(x=>{const card=make("article","card");if(x.category==="cinema"){card.tabIndex=0;card.setAttribute("role","button");card.setAttribute("aria-label","Makaleyi oku: "+x.title);card.style.cursor="pointer";const openTarget=()=>{if(String(x.id)==="10"||/squid\s*game/i.test(x.title||"")){window.location.href="/cinema/squid-game/";return;}openStory(x);};card.addEventListener("click",openTarget);card.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();openTarget();}});}if(x.image_url){const im=make("img");im.src=x.image_url;im.alt=x.title;im.loading="lazy";im.style.cssText="width:100%;height:180px;object-fit:cover;margin-bottom:14px";card.append(im);}card.append(make("small","",x.category.toUpperCase()));card.append(make("h3","",x.title));if(x.description)card.append(make("p","",x.description));if(x.category==="cinema")card.append(make("span","card-read-more","MAKALENİ OXU →"));root.append(card);});};
   renderCards(groups.cinema,"cmsCinema",cinemaRoot);
+  if(!groups.cinema.some(x=>/dijital\\s*sinema|netflix ve dijital platformlar/i.test(x.title||""))){
+    const cinemaCards=document.getElementById("cmsCinema");
+    if(cinemaCards){
+      const card=make("article","card");
+      card.tabIndex=0;
+      card.setAttribute("role","link");
+      card.setAttribute("aria-label","Dijital Sinema makalesini oku");
+      card.style.cursor="pointer";
+      const openDigitalCinema=()=>{window.location.href="/cinema/digital-cinema/";};
+      card.addEventListener("click",openDigitalCinema);
+      card.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();openDigitalCinema();}});
+      card.append(make("small","","CINEMA"));
+      card.append(make("h3","","DİJİTAL SİNEMA"));
+      card.append(make("p","","Netflix ve Dijital Platformların Sinema Endüstrisine Etkisi — Pandemi Dönemi ve Sonrası"));
+      card.append(make("span","card-read-more","MAKALENİ OXU →"));
+      cinemaCards.prepend(card);
+    }
+  }
   if(!groups.cinema.some(x=>/squid\\s*game/i.test(x.title||""))){
     const cinemaCards=document.getElementById("cmsCinema");
     if(cinemaCards){
