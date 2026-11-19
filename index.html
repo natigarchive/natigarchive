@@ -354,6 +354,24 @@ restoreRoute();
       cinemaCards.prepend(card);
     }
   }
+  if(!groups.cinema.some(x=>/Russian Ark|Aleksandr Sokurov/i.test(x.title||""))){
+    const cinemaCards=document.getElementById("cmsCinema");
+    if(cinemaCards){
+      const card=make("article","card");
+      card.tabIndex=0;
+      card.setAttribute("role","link");
+      card.setAttribute("aria-label","Aleksandr Sokurov Russian Ark makalesini oku");
+      card.style.cursor="pointer";
+      const openRussianArk=()=>{window.location.href="/cinema/aleksandr-sokurov-russian-ark/";};
+      card.addEventListener("click",openRussianArk);
+      card.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();openRussianArk();}});
+      card.append(make("small","","CINEMA"));
+      card.append(make("h3","","RUSSIAN ARK"));
+      card.append(make("p","","İhtişamlı Bir Yolculuk: Aleksandr Sokurov'un Tek Planda Eşsiz Başyapıtı"));
+      card.append(make("span","card-read-more","MAKALENİ OXU →"));
+      cinemaCards.prepend(card);
+    }
+  }
   renderCards(groups.works,"cmsWorks",worksRoot);
   renderCards(groups.mystery,"cmsMystery",mysteryRoot);
   const openStory=(x,updateRoute=true)=>{const overlay=document.getElementById("storyReader"),body=document.getElementById("readerBody");body.innerHTML="";body.append(make("h1","reader-title",x.title));body.append(make("div","reader-byline","NATİQ MİSİRZADƏ  /  "+(x.category||"LITERATURE").toUpperCase()));if(x.description)body.append(make("p","reader-description",x.description));const content=make("div","reader-text",x.content||"");body.append(content);overlay.classList.add("open");overlay.setAttribute("aria-hidden","false");document.body.style.overflow="hidden";if(updateRoute&&x.id){showView(x.category==="literature"?"stories":x.category);const next="#story-"+x.id;if(location.hash!==next)history.pushState({storyId:x.id},"",next);}};
