@@ -336,6 +336,24 @@ restoreRoute();
       cinemaCards.prepend(card);
     }
   }
+  if(!groups.cinema.some(x=>/Türk Sinemasında Dönemler ve Yönetmenler/i.test(x.title||""))){
+    const cinemaCards=document.getElementById("cmsCinema");
+    if(cinemaCards){
+      const card=make("article","card");
+      card.tabIndex=0;
+      card.setAttribute("role","link");
+      card.setAttribute("aria-label","Türk Sinemasında Dönemler ve Yönetmenler makalesini oku");
+      card.style.cursor="pointer";
+      const openCeylanArticle=()=>{window.location.href="/cinema/nuri-bilge-ceylan/";};
+      card.addEventListener("click",openCeylanArticle);
+      card.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();openCeylanArticle();}});
+      card.append(make("small","","CINEMA"));
+      card.append(make("h3","","TÜRK SİNEMASINDA DÖNEMLER VE YÖNETMENLER"));
+      card.append(make("p","","Nuri Bilge Ceylan’ın Koza, Kasaba ve Mayıs Sıkıntısı filmleri üzerine akademik inceleme"));
+      card.append(make("span","card-read-more","MAKALENİ OXU →"));
+      cinemaCards.prepend(card);
+    }
+  }
   renderCards(groups.works,"cmsWorks",worksRoot);
   renderCards(groups.mystery,"cmsMystery",mysteryRoot);
   const openStory=(x,updateRoute=true)=>{const overlay=document.getElementById("storyReader"),body=document.getElementById("readerBody");body.innerHTML="";body.append(make("h1","reader-title",x.title));body.append(make("div","reader-byline","NATİQ MİSİRZADƏ  /  "+(x.category||"LITERATURE").toUpperCase()));if(x.description)body.append(make("p","reader-description",x.description));const content=make("div","reader-text",x.content||"");body.append(content);overlay.classList.add("open");overlay.setAttribute("aria-hidden","false");document.body.style.overflow="hidden";if(updateRoute&&x.id){showView(x.category==="literature"?"stories":x.category);const next="#story-"+x.id;if(location.hash!==next)history.pushState({storyId:x.id},"",next);}};
