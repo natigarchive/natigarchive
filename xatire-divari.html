@@ -152,7 +152,8 @@ document.getElementById('submitMemory').addEventListener('click',async()=>{
  button.disabled=true;status.textContent='Xatirən arxivə göndərilir...';
  try{
   const currency=method==='enpara'?'TRY':'AZN';
-  const submissionId=crypto.randomUUID();\n  const response=await fetch(SUPABASE_URL+'/rest/v1/memory_submissions',{method:'POST',headers:{apikey:SUPABASE_KEY,'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify({id:submissionId,...draftMemory,contribution_amount:amount,currency,payment_method:method})});
+  const submissionId=crypto.randomUUID();
+  const response=await fetch(SUPABASE_URL+'/rest/v1/memory_submissions',{method:'POST',headers:{apikey:SUPABASE_KEY,'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify({id:submissionId,...draftMemory,contribution_amount:amount,currency,payment_method:method})});
   if(!response.ok){const detail=await response.text();throw new Error(detail||'Sorğu qeydə alınmadı.');}
   const submission={id:submissionId};
   const account=method==='enpara'?{bank:'Enpara',owner:'NATIG MISIRZADE',number:'TR02 0015 7000 0000 0123 4986 39'}:{bank:'Kapital Bank',owner:'NATİQ MİSİＲZADƏ',number:'4169 7388 9265 2581'};
