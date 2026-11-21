@@ -39,7 +39,7 @@ button{background:var(--gold);color:#111;border:0;padding:12px 16px;font-weight:
 </div>
 <div id="app" class="wrap">
 <header class="top"><div><div class="brand">NATIG ARCHIVE</div><div class="muted">MƏRKƏZİ İDARƏETMƏ PANELİ</div></div><div class="row" style="flex:0 1 auto"><span id="userEmail" class="muted"></span><button id="logoutBtn" class="secondary">Çıxış</button></div></header>
-<div class="tabs"><button class="active" data-tab="content">Arxiv məzmunu</button><button data-tab="journal">Jurnal müraciətləri</button><button data-tab="memories">Xatirə Divarı</button><button data-tab="products">Market məhsulları</button><button data-tab="orders">Sifarişlər</button><button data-tab="media">Şəkillər</button><button data-tab="chat">Canlı çat <span id="chatUnread" style="color:#c8a96a"></span></button></div>
+<div class="tabs"><button class="active" data-tab="content">Arxiv məzmunu</button><button data-tab="journal">Jurnal müraciətləri</button><button data-tab="memories">Xatirə Divarı</button><button data-tab="products">Market məhsulları</button><button data-tab="orders">Sifarişlər</button><button data-tab="media">Şəkillər</button><button data-tab="chat">Canlı çat <span id="chatUnread" style="color:#c8a96a"></span></button><button data-tab="advertising">Reklam müraciətləri</button></div>
 <div id="status" class="notice hidden"></div>
 <section id="journalTab" class="hidden"><div class="card"><div class="row"><div><h2 style="margin:0">Jurnal üçün göndərilən yazılar</h2><p class="muted">Yazını yoxla. Təsdiq etdikdə avtomatik NATIG ARCHIVE jurnalında dərc ediləcək.</p></div><button class="secondary" id="refreshJournal" style="flex:0 0 auto">Yenilə</button></div><div id="journalAdminList" class="muted" style="margin-top:14px">Yüklənir...</div></div></section>
 <section id="contentTab">
@@ -67,6 +67,7 @@ button{background:var(--gold);color:#111;border:0;padding:12px 16px;font-weight:
 <section id="chatTab" class="hidden"><div class="card"><div class="row"><div><h2 style="margin:0">Canlı dəstək mesajları</h2><p class="muted">Sayt ziyarətçilərinin mesajları burada görünür.</p></div><button class="secondary" id="refreshChats" style="flex:0 0 auto">Yenilə</button></div>
 <div id="chatInbox"><div id="chatThreads"><div class="muted">Söhbətlər yüklənir...</div></div><div id="chatThread"><div class="muted" id="chatEmpty">Söhbət seçərək mesajları oxu və cavab yaz.</div><div id="chatMessages"></div><form id="chatReplyForm" class="hidden"><textarea id="chatReply" maxlength="2000" placeholder="Cavabını yaz..." required></textarea><button type="submit">Göndər</button></form><div class="row" style="margin-top:10px"><button class="secondary hidden" id="chatCloseConversation" type="button">Söhbəti bağla</button></div></div></div></div></section>
 <section id="memoriesTab" class="hidden"><div class="card"><div class="row"><div><h2 style="margin:0">Xatirə Divarı müraciətləri</h2><p class="muted">Əvvəl bank daxilolmasını yoxla, sonra xatirəni ayrıca yayımla.</p></div><button class="secondary" id="refreshMemories" style="flex:0 0 auto">Yenilə</button></div><div id="memoryAdminList" class="muted" style="margin-top:14px">Yüklənir...</div></div></section>
+<section id="advertisingTab" class="hidden"><div class="card"><div class="row"><div><h2 style="margin:0">Reklam və tərəfdaşlıq müraciətləri</h2><p class="muted">Yeni müraciətləri nəzərdən keçir, statusu dəyiş və lazım olduqda daxili qeyd əlavə et.</p></div><button class="secondary" id="refreshAdvertising" style="flex:0 0 auto">Yenilə</button></div><div id="advertisingList" class="muted" style="margin-top:14px">Yüklənir...</div></div></section>
 </div>
 <script>
 const SUPABASE_URL="https://kmgfziafzuibfhfotyip.supabase.co";
@@ -93,7 +94,7 @@ $("loginBtn").onclick=async()=>{const email=$("email").value.trim(),password=$("
 $("password").addEventListener("keydown",e=>{if(e.key==="Enter")$("loginBtn").click();});
 $("logoutBtn").onclick=async()=>{await db.auth.signOut();location.reload();};
 db.auth.onAuthStateChange((_event,session)=>{if(session&&session.user.id===ADMIN_ID&&!currentUser)showView(session.user);});
-document.querySelectorAll("[data-tab]").forEach(btn=>btn.onclick=()=>{document.querySelectorAll("[data-tab]").forEach(b=>b.classList.toggle("active",b===btn));["content","journal","products","orders","media","chat","memories"].forEach(t=>$(t+"Tab").classList.toggle("hidden",t!==btn.dataset.tab));if(btn.dataset.tab==="memories")loadMemories();if(btn.dataset.tab==="journal")loadJournalSubmissions();clearStatus();});
+document.querySelectorAll("[data-tab]").forEach(btn=>btn.onclick=()=>{document.querySelectorAll("[data-tab]").forEach(b=>b.classList.toggle("active",b===btn));["content","journal","products","orders","media","chat","memories","advertising"].forEach(t=>$(t+"Tab").classList.toggle("hidden",t!==btn.dataset.tab));if(btn.dataset.tab==="memories")loadMemories();if(btn.dataset.tab==="journal")loadJournalSubmissions();if(btn.dataset.tab==="advertising")loadAdvertisingInquiries();clearStatus();});
 function resetContent(){$("contentForm").reset();$("contentId").value="";$("contentFormTitle").textContent="Yeni məzmun əlavə et";$("contentSave").textContent="Yadda saxla";}
 $("contentReset").onclick=resetContent;
 $("contentForm").onsubmit=async e=>{e.preventDefault();try{$("contentSave").disabled=true;let imageUrl=null;const file=$("contentImage").files[0];if(file)imageUrl=await uploadImage(file);const id=$("contentId").value;const row={title:$("contentTitle").value.trim(),category:$("contentCategory").value,language:$("contentLanguage").value,description:$("contentDescription").value,content:$("contentBody").value,published:$("contentPublished").checked};if(imageUrl)row.image_url=imageUrl;const result=id?await db.from("archive_content").update(row).eq("id",id):await db.from("archive_content").insert(row);if(result.error)throw result.error;resetContent();showStatus("Məzmun uğurla yadda saxlanıldı.");await loadContent();}catch(err){showStatus("Xəta: "+err.message,true);}finally{$("contentSave").disabled=false;}};
@@ -236,6 +237,31 @@ async function updateMemory(id,patch,question){
  await loadMemories();
 }
 $("refreshMemories").onclick=loadMemories;
+
+
+async function loadAdvertisingInquiries(){
+ const box=$("advertisingList");box.textContent="Müraciətlər yüklənir...";
+ const {data,error}=await db.from("advertising_inquiries").select("id,company_name,contact_name,email,website,ad_type,budget,message,status,admin_note,created_at").order("created_at",{ascending:false}).limit(200);
+ if(error){box.textContent="Xəta: "+error.message;return;}
+ box.replaceChildren();if(!data?.length){box.textContent="Hələ reklam müraciəti yoxdur.";return;}
+ const labels={homepage_banner:"Ana səhifə banneri",article_ad:"Məqalə daxilində reklam",sponsored_article:"Sponsorlu məqalə",monthly_partnership:"Aylıq tərəfdaşlıq",other:"Digər"};
+ data.forEach(item=>{
+  const card=document.createElement("div");card.className="item";card.style.alignItems="flex-start";
+  const main=document.createElement("div");main.className="item-main";
+  const title=document.createElement("div");title.className="item-title";title.textContent=item.company_name+" · "+labels[item.ad_type];
+  const meta=document.createElement("div");meta.className="muted";meta.textContent=item.contact_name+" · "+item.email+" · "+new Date(item.created_at).toLocaleString()+(item.budget?" · Büdcə: "+item.budget:"");
+  const link=document.createElement("div");link.className="muted";link.textContent=item.website||"Veb-sayt göstərilməyib";
+  const msg=document.createElement("p");msg.style.whiteSpace="pre-wrap";msg.style.margin="10px 0";msg.textContent=item.message;
+  const note=document.createElement("textarea");note.placeholder="Daxili qeyd (yalnız admin)";note.value=item.admin_note||"";note.style.minHeight="65px";note.style.marginTop="8px";
+  main.append(title,meta,link,msg,note);
+  const actions=document.createElement("div");actions.className="item-actions";actions.style.flexDirection="column";
+  const status=document.createElement("select");status.style.width="145px";status.innerHTML='<option value="pending">Yeni</option><option value="contacted">Əlaqə saxlanılıb</option><option value="accepted">Qəbul edilib</option><option value="rejected">Rədd edilib</option>';status.value=item.status;
+  const save=document.createElement("button");save.textContent="Yadda saxla";save.onclick=async()=>{save.disabled=true;const {error}=await db.from("advertising_inquiries").update({status:status.value,admin_note:note.value.trim()||null}).eq("id",item.id);save.disabled=false;if(error)showStatus("Müraciət yenilənmədi: "+error.message,true);else showStatus("Reklam müraciəti yeniləndi.");await loadAdvertisingInquiries();};
+  const mail=document.createElement("a");mail.href="mailto:"+encodeURIComponent(item.email);mail.textContent="E-poçt yaz";mail.style.fontSize="12px";mail.style.color="var(--gold)";
+  actions.append(status,save,mail);card.append(main,actions);box.append(card);
+ });
+}
+$("refreshAdvertising").onclick=loadAdvertisingInquiries;
 
 async function loadChats(){
  const box=$("chatThreads");box.textContent="Yüklənir...";
