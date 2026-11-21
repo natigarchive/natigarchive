@@ -461,6 +461,13 @@ restoreRoute();
   .na-checkout-actions button.secondary{background:transparent;color:#eee}.na-checkout-result{margin-top:18px;padding:15px;border:1px solid #655238;background:#17140f;overflow-wrap:anywhere}
   .na-checkout-result strong{color:#d6b77f}.na-checkout-close{position:absolute;right:14px;top:10px;background:none;border:0;color:#c6a879;font-size:25px;cursor:pointer}
   .na-muted{font-size:11px!important;color:#81796d!important}
+  .na-bank-details{margin:16px 0;padding:17px;border:1px solid #655238;background:#0b0b0a}
+  .na-bank-name{color:#d6b77f;font-size:12px;letter-spacing:2px;margin-bottom:12px}
+  .na-bank-row{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;padding:10px 0;border-top:1px solid #30291f;font-size:12px}
+  .na-bank-row span{color:#938b7e}.na-bank-row strong{color:#eeeae2;text-align:right;overflow-wrap:anywhere}
+  .na-bank-row button{grid-column:2;border:1px solid #655238;background:transparent;color:#d6b77f;padding:7px 9px;font-size:9px;letter-spacing:1px;cursor:pointer}
+  .na-payment-notify{display:block;text-align:center;margin-top:16px;padding:14px;background:#c6a879;color:#111;font-size:10px;letter-spacing:1.3px;font-weight:bold}
+  @media(max-width:420px){.na-checkout-box{padding:22px 17px}.na-bank-row{grid-template-columns:1fr}.na-bank-row strong{text-align:left}.na-bank-row button{grid-column:1;justify-self:start}}
   `;
   document.head.append(style);
   const modal=make("div","na-checkout");modal.id="naCheckout";
@@ -502,9 +509,31 @@ restoreRoute();
   if(!order){result.hidden=false;result.textContent="Sifariş cavabı alınmadı. Yenidən yoxla.";return;}
   form.hidden=true;result.hidden=false;
   const amount=Number(order.amount).toFixed(2)+" "+order.currency;
-  result.innerHTML='<strong>Sifariş qeydə alındı</strong><p>Sifariş kodu: <strong></strong></p><p>Məbləğ: <strong></strong></p><p>Hazırda bank rekvizitləri sayta əlavə edilməyib. Köçürmə etmə; rekvizitlər əlavə ediləndə sifariş təlimatını yeniləyəcəyik.</p><p class="na-muted">Sifariş ödəniş təsdiqi deyil. Məbləğ bank hesabında yoxlanıldıqdan sonra admin tərəfindən təsdiqlənəcək.</p>';
-  result.querySelectorAll("strong")[1].textContent=order.order_code;
-  result.querySelectorAll("strong")[2].textContent=amount;
+  const bank=method==="kapital"
+   ?{name:"KAPİTAL BANK",owner:"NATİQ MİSİRZADƏ",label:"Kart nömrəsi",account:"4169 7388 9265 2581",currency:"AZN"}
+   :{name:"ENPARA",owner:"NATIG MISIRZADE",label:"IBAN",account:"TR02 0015 7000 0000 0123 4986 39",currency:"TRY"};
+  result.replaceChildren();
+  const heading=document.createElement("strong");heading.textContent="Sifariş qeydə alındı";
+  const intro=document.createElement("p");intro.textContent="Köçürməni aşağıdakı hesaba et. Köçürmə açıqlamasında sifariş kodunu mütləq qeyd et.";
+  const details=document.createElement("div");details.className="na-bank-details";
+  details.innerHTML='<div class="na-bank-name"></div><div class="na-bank-row"><span>Hesab sahibi</span><strong class="na-bank-owner"></strong></div><div class="na-bank-row"><span class="na-account-label"></span><strong class="na-bank-account"></strong><button type="button" class="na-copy-account">KOPYALA</button></div><div class="na-bank-row"><span>Məbləğ</span><strong class="na-bank-amount"></strong></div><div class="na-bank-row"><span>Sifariş kodu</span><strong class="na-bank-code"></strong><button type="button" class="na-copy-code">KOPYALA</button></div>';
+  details.querySelector(".na-bank-name").textContent=bank.name;
+  details.querySelector(".na-bank-owner").textContent=bank.owner;
+  details.querySelector(".na-account-label").textContent=bank.label;
+  details.querySelector(".na-bank-account").textContent=bank.account;
+  details.querySelector(".na-bank-amount").textContent=amount;
+  details.querySelector(".na-bank-code").textContent=order.order_code;
+  const copy=(value,button)=>{const done=()=>{button.textContent="KOPYALANDI";setTimeout(()=>button.textContent="KOPYALA",1800);};if(navigator.clipboard?.writeText){navigator.clipboard.writeText(value).then(done).catch(()=>{button.textContent="SEÇİB KOPYALA";});}else{button.textContent="SEÇİB KOPYALA";}};
+  details.querySelector(".na-copy-account").addEventListener("click",()=>copy(bank.account,details.querySelector(".na-copy-account")));
+  details.querySelector(".na-copy-code").addEventListener("click",()=>copy(order.order_code,details.querySelector(".na-copy-code")));
+  const note=document.createElement("p");note.className="na-muted";note.textContent="Ödəniş etdikdən sonra aşağıdakı bildiriş düyməsi ilə sifariş kodunu və köçürmə məlumatını bizə göndər. Ödəniş bank hesabında yoxlanıldıqdan sonra təsdiqlənəcək.";
+  const notify=document.createElement("a");notify.className="na-payment-notify";notify.textContent="ÖDƏNİŞ ETDİM — BİLDİRİŞ GÖNDƏR";
+  const subject=encodeURIComponent("NATIG ARCHIVE — Ödəniş bildirişi "+order.order_code);
+  const body=encodeURIComponent("Salam, NATIG ARCHIVE sifarişim üçün ödəniş etdim.\nSifariş kodu: "+order.order_code+"\nMəbləğ: "+amount+"\nBank: "+bank.name+"\nAlıcı: "+email+"\nZəhmət olmasa ödənişi yoxlayın.");
+  notify.href="mailto:natigmisirzade@gmail.com?subject="+subject+"&body="+body;
+  notify.target="_blank";
+  const foot=document.createElement("p");foot.className="na-muted";foot.textContent="Bu bildiriş e-poçt tətbiqini açır; göndərməzdən əvvəl məktubu təsdiqlə. Sifariş avtomatik ödənilmiş sayılmır.";
+  result.append(heading,intro,details,note,notify,foot);
  }
  async function loadMarket(){
   const {data,error}=await archiveDb.from("market_products").select("id,name,description,price,price_try,price_azn,image_url,category,active").eq("active",true).order("created_at",{ascending:false});
