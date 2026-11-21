@@ -257,7 +257,7 @@ async function loadAdvertisingInquiries(){
   const actions=document.createElement("div");actions.className="item-actions";actions.style.flexDirection="column";
   const status=document.createElement("select");status.style.width="145px";status.innerHTML='<option value="pending">Yeni</option><option value="contacted">Əlaqə saxlanılıb</option><option value="accepted">Qəbul edilib</option><option value="rejected">Rədd edilib</option>';status.value=item.status;
   const save=document.createElement("button");save.textContent="Yadda saxla";save.onclick=async()=>{save.disabled=true;const {error}=await db.from("advertising_inquiries").update({status:status.value,admin_note:note.value.trim()||null}).eq("id",item.id);save.disabled=false;if(error)showStatus("Müraciət yenilənmədi: "+error.message,true);else showStatus("Reklam müraciəti yeniləndi.");await loadAdvertisingInquiries();};
-  const mail=document.createElement("a");mail.href="mailto:"+encodeURIComponent(item.email);mail.textContent="E-poçt yaz";mail.style.fontSize="12px";mail.style.color="var(--gold)";
+  const mail=document.createElement("a");mail.href="mailto:"+item.email;mail.textContent="E-poçt yaz";mail.style.fontSize="12px";mail.style.color="var(--gold)";
   actions.append(status,save,mail);card.append(main,actions);box.append(card);
  });
 }
