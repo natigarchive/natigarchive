@@ -160,7 +160,7 @@ async function setOrderStatus(id,status){
  if(!confirm(promptText))return;
  const patch=status==="paid"?{status,paid_at:new Date().toISOString()}:{status};
  const {error}=await db.from("market_orders").update(patch).eq("id",id);
- if(error)showStatus("Sifariş yenilənmədi: "+error.message,true);else{showStatus(status==="paid"?"Ödəniş təsdiqləndi. PDF çatdırılması hələ ayrıca qoşulmalıdır.":"Sifariş rədd edildi.");loadOrders();}
+ if(error)showStatus("Sifariş yenilənmədi: "+error.message,true);else{showStatus(status==="paid"?"Ödəniş təsdiqləndi. İndi sifarişlər bölməsindən PDF-i alıcıya göndərə bilərsən.":"Sifariş rədd edildi.");loadOrders();}
 }
 $("refreshOrders").onclick=loadOrders;
 
